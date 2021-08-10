@@ -1,4 +1,4 @@
-/*0809  q01
+/*0809  q01 
  * CMyString operator =
  * class CMyString{
  *      public:
