@@ -1,5 +1,5 @@
 /*0808
- * des:
+ * descr:
  *      you get a linkedList head and a int k. let elements in list >> k times;
  * note:
  *      notice that k may larger than the list SIZE.
