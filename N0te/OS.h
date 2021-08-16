@@ -60,3 +60,54 @@
 5.内存管理：完成内存的分配、回收等功能
 
 */
+
+/*P2  C1操作系统上的程序
+·一个干净的理论模型：状态=M+R
+初始状态：程序启动时操作系统给安排的状态 
+状态转移=时钟驱动的指令执行
+*/
+//最小的程序
+int _start(){}//gcc -c a.c && ld a.o 不报错。运行得到segmentation fault（core dumped）
+/*gdb
+starti可以帮助我们从第一条指令开始执行程序
+start会在main停下
+layout asm
+info registers
+info inferiors
+x 0x00400000
+x/x $rsp
+x/i $rsp
+x $rsp
+si
+ctrl + L 
+bt
+*/
+//readelf -a
+/*
+·main函数执行之前、之中、之后分别调用了哪些系统API
+	·strace
+		strace ./hello-goodbye
+		strace ./a.out |& vim -
+		//mmap,execve,...
+*/
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
