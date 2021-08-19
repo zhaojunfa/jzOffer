@@ -68,6 +68,10 @@
 */
 //最小的程序
 int _start(){}//gcc -c a.c && ld a.o 不报错。运行得到segmentation fault（core dumped）
+//因为retq等于$PC <- mem[$rsp] :
+(gdb) x $rsp
+0x7fffffffe560: 0x00000001 //si,segmentation fault
+
 /*gdb
 starti可以帮助我们从第一条指令开始执行程序
 start会在main停下
@@ -88,6 +92,7 @@ bt
 	·strace
 		strace ./hello-goodbye
 		strace ./a.out |& vim -
+		strace -f gcc a.c (子进程)
 		//mmap,execve,...
 */
 
