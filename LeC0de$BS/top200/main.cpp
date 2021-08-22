@@ -355,7 +355,22 @@ public:
     }
 
     int get(std::unordered_map<int,pListNode> lru_map, pListNode &head,int key){
-
+        auto it = lru_map.find(key);
+        if(it != lru_map.end()){
+            auto curr_node = it->second;
+            //
+            auto tail_node = head->pre;
+            auto next_node = curr_node->next;
+            head->next = next_node;
+            next_node->pre = head;
+            tail_node->next = curr_node;
+            curr_node->pre = tail_node;
+            curr_node->next = head;
+            head->pre = curr_node;
+            return curr_node->value;
+        }
+        else
+            return -1;
     }
 
     vector<int> LRU(vector<vector<int> >& operators, int k) {
@@ -370,8 +385,15 @@ public:
             next = next->next;
         }//k+1 nodes
         //
-        std::unordered_map<int,pListNode> lur_map;
-
+        std::unordered_map<int,pListNode> lru_map;
+        std::vector<int> result;
+        for(auto &vec:operators){
+            if(vec[0] == 1)
+                set(head,lru_map,vec[1],vec[2]);
+            else
+                result.push_back(get(lru_map,head,vec[1]));
+        }
+    return result;
     }
 };
 
@@ -386,7 +408,9 @@ int main()
 {
     cout << "Hello World!" << endl;
     Solution *s = new Solution();
-    s->solve_("3+2*3*4-1");
+    vector<vector<int> >operators ={{1,1,1},{1,2,2},{1,3,2},{2,1},{1,4,4},{2,2}};
+    int k =3;
+    s->LRU(operators,k);
 
 
 
