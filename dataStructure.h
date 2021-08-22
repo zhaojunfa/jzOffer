@@ -46,6 +46,8 @@ void createBTree(bTreeNode **ppBTreeNode){
     }
     return;
 }
+
+
 //6 ways to print bTree
 
 //preOrder-traversal: recursion + withStack
@@ -150,6 +152,55 @@ void postOrderWith2Stack(bTreeNode *pBTreeNode){
         std::cout << output.top()->data << ' ';
         output.pop();
     }
+}
+
+//levelOrderTraversal
+void levelOrderTraversalWithQueue(bTreeNode *pBTreeNode){
+    if(!pBTreeNode)
+        return;
+    std::queue<bTreeNode *> nodes;
+    nodes.push(pBTreeNode);
+    while(!nodes.empty()){
+        bTreeNode *top = nodes.front();
+        nodes.pop();
+        std::cout<<top->data<<' ';
+        if(top->left)
+            nodes.push(top->left);
+        if(top->right)
+            nodes.push(top->right);
+    }
+}
+
+//NC15 levelOrderTraversaltoVector
+std::vector<std::vector<int>> levelOrderTraversalToVector(bTreeNode *pBTreeNode){
+    if(!pBTreeNode)
+        return std::vector<std::vector<int>>();
+    std::queue<bTreeNode*> nodes;
+    nodes.push(pBTreeNode);
+    std::vector<std::vector<int>> res;
+    std::vector<int> res_level;
+    int sz = 1;
+    while(!nodes.empty()){
+        sz = nodes.size();
+        res_level.resize(sz);
+        for(int i = 0; i < sz; ++i){
+            res_level[i] = nodes.front()->data;
+            if(nodes.front()->left)
+                nodes.push(nodes.front()->left);
+            if(nodes.front()->right)
+                nodes.push(nodes.front()->right);
+            nodes.pop();
+        }
+        res.push_back(res_level);
+    }
+    //
+//    for(auto &e:res){
+//        for(auto &e_:e)
+//            std::cout <<e_ <<' ';
+//        std::cout<<std::endl;
+//    //
+//    }
+    return res;
 }
 
 

@@ -4,9 +4,13 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    main.cpp
+    #LeC0de$BS\top200\top200.cpp\
+   # main.cpp\
+    N0te/sortAlgorithms.cpp
 
 HEADERS += \
-    dataStructure.h
+    dataStructure.h\
+    #LeC0de$BS\top200\top200.h\
+
 
 

@@ -1,81 +1,87 @@
-/*0809  q01
- * CMyString operator =
- * class CMyString{
- *      public:
- *          CMyString(char *pData = nullptr);
- *          CMyString(const CMyString &str);
- *          ~CMyString(void);
- *      private:
- *          char *m_pData;
- * };
-*/
-/* ·return type should be ref&
- * ·parameter should be const &
- * ·remember release memory
- * ·determine if parameter is equal to 'this'
- * ·'new' may throw 'bad_alloc'
-*/
-#include <cstring>
-#include <iostream>
-using namespace std;
-class CMyString{
-public:
-    CMyString(char *pData = nullptr);
-    CMyString(const CMyString &);
-    ~CMyString();
-    CMyString& operator=(const CMyString &);
-private:
-    char *m_pData;
-};
+/*BST*/
 
-CMyString::CMyString(char *pData)
-{
-    this->m_pData = pData;
+#include "dataStructure.h"
+
+//insertBST
+bool insertBST(bTreeNode **pBtreeNode,valueType data){
+    if(!(*pBtreeNode)){
+        *pBtreeNode = new bTreeNode;
+        (*pBtreeNode)->data = data;
+        (*pBtreeNode)->right = (*pBtreeNode)->left = nullptr;
+        return true;
+    }
+    else if((*pBtreeNode)->data < data)
+        return insertBST(&(*pBtreeNode)->right,data);
+    else if((*pBtreeNode)->data > data)
+        return insertBST(&(*pBtreeNode)->left,data);
+    return false;//repeat insert
 }
+//searchBST
+//bTreeNode *searchBST(bTreeNode *pNode,valueType data,bTreeNode *f){
+//    //isroot
+//    if(data == pNode->data)
+//    //
+//}
 
-CMyString::CMyString(const CMyString &str)
-{
-    if(&str == this)
-        return;
-    if(str.m_pData == nullptr)
-        this->m_pData = nullptr;
-    else{
-        this->m_pData = new char[strlen(str.m_pData) + 1];
-        strcpy(m_pData,str.m_pData);
+//deleteBST
+
+//quickSort
+int partition(std::vector<int> &arr,int low,int high){
+    int pivotKey = arr[low];
+    while(low<high){
+        while(low<high && arr[high]>=pivotKey)
+            --high;
+        arr[low] = arr[high];
+        while(low<high && arr[low]<=pivotKey)
+            ++low;
+        arr[high] = arr[low];
+    }
+    arr[low] = pivotKey;
+    return low;
+}
+void QSort(std::vector<int> &arr,int low,int high){
+    int pivot;
+    if(low<high){
+        pivot = partition(arr,low,high);
+        QSort(arr,low,pivot-1);
+        QSort(arr,pivot+1,high);
     }
 }
 
-CMyString::~CMyString()
-{
-    delete [] this->m_pData;
-}
+//
+void insertionSort(std::vector<int> &arr){
+        int length = arr.size();
+        int temp = 0;
+        for(int i = 1;i<length;++i){
+            if(arr[i] < arr[i-1]){
+                temp = arr[i];
+                int j = i-1;
+                while(j!=-1 && arr[j] > temp){
+                    arr[j+1] = arr[j];
+                    --j;
+                }
+                arr[j+1] = temp;
+            }
+        }
+    }
 
-CMyString& CMyString::operator=(const CMyString &str){
-//    if(this == &str)
-//        return *this;
-//    delete [] m_pData;
-//    m_pData = nullptr;
-//    m_pData = new char[strlen(str.m_pData) + 1];
-//    strcpy(m_pData,str.m_pData);
-//    return *this;//new may throw an except
-    if(this == &str)
-        return *this;
-    CMyString tempStr(str);//先创建一个临时实例再交换this和临时实例中的pData内容
-    char *tempP = tempStr.m_pData;
-    tempStr.m_pData = this->m_pData;
-    this->m_pData = tempP;
-    return *this;
-}
+
+
+//merging sort
+//void mergeSort2(Sqlist *L){
+//    int *TR= (int *)malloc(sizeof(int) * L->length);
+//    int k =1;
+//    while(KK<L->length){
+//        mergepass(l->r,TR,k,l_.length);
+//        k*=2;
+//        mergepass(TR,l->r,k,L>length);
+//        k*=2;
+//    }
+//}
 
 int main(){
-    char str[] = {'h','e','l','l','o','\0'};
-    CMyString s1(str);
-    s1 = s1;//自己对自己赋值
-    CMyString s2 = s1;
-    CMyString s3(s1);
-    CMyString s4;
-    s3 = s1;//一个实例赋给另一个实例
-    s4 = s2 = s1;//连续赋值
-    //test operator =
-    return 0;
+    bTreeNode *root = nullptr;
+    createBTree(&root);
+//    levelOrderTraversalWithQueue(root);
+    //levelOrderTraversalToVector(root);
 }

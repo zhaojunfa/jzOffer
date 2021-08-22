@@ -1,5 +1,12 @@
 /*
  *sort algorithm(s)
+ * bubble sort
+ * selection sort
+ * heap sort
+ * insertion sort
+ * shell sort
+ * merging sort
+ * quick sort
 */
 #include "dataStructure.h"
 using namespace std;
@@ -43,10 +50,40 @@ void selectionSort(vector<int> &arr){
     }
 }
 // 'Select Sort' has Optimized Space:heapSort!
-void heapSort(vector<int> arr){
 
+void heapAdjust(std::vector<int> &arr,int s,int m){
+//adjust arr,making [arr[s],arr[m]] a max-heap;
+    arr[0] = arr[s];//arr[0] is temp
+    int j;
+    //
+    for(j = s*2;j<=m;j*=2){
+        if(j<m && arr[j]< arr[j+1])
+            ++j;
+        if(arr[0] >= arr[j])
+            break;
+        arr[s] = arr[j];
+        s = j;
+    }
+    arr[s] = arr[0];
 }
 
+void heapSort(vector<int> &arr){
+    int length = arr.size() - 1;//data length,not arr.size
+    for(int i = length /2;i>0;--i){
+        heapAdjust(arr,i,length);
+    }
+    for(int i = length;i>0;--i){
+        int temp = arr[1];
+        arr[1] = arr[i];
+        arr[i] = temp;
+        heapAdjust(arr,1,i-1);
+    }
+}
+
+
+
+
+//insertionSort
 void insertionSort(vector<int> &arr){
     //Insert sorting likes playing card.arr[0] = 0(Sentinel node)
     //053462
@@ -89,14 +126,15 @@ int main(){
 
 
     bTreeNode *root = nullptr;
-    createBTree(&root);
+    //createBTree(&root);
     //inOrderTraversalWithStack_(root);//213
     //postOrderTraversalWith1Stack_(root);
-    vector<int> arr = {8,9,5,7,1,4,3,2};
+    vector<int> arr = {-1,8,9,5,7,1,4,3,2};
     vector<int> arr_ = {1,2,3,4,5,6,7,8,9};
+    heapSort(arr);
     //bubbleSort(arr);
     //selectionSort(arr);
     //selectionSort(arr);
-    //for(auto e:arr)
-        //cout << e << ' ';
+    for(auto e:arr)
+        cout << e << ' ';
 }
