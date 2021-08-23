@@ -5,6 +5,7 @@
 #include <set>
 #include <algorithm>
 #include <list>
+#include <queue>
 #include <unordered_map>
 
 using namespace std;
@@ -513,31 +514,31 @@ public:
         //
         std::reverse(s.begin(),s.end());
         std::reverse(t.begin(),t.end());
-        std::stack<int> resultWithStack;
+        std::queue<int> resultWithQueue;
         int sLength = s.size();
         int tLength = t.size();
         for(int i=0;i<min(sLength,tLength);++i){
-            resultWithStack.push(s[i]-'0'+t[i]-'0');
+            resultWithQueue.push(s[i]-'0'+t[i]-'0');
         }
         if(sLength > tLength){
             for(int i=tLength;i<sLength;++i)
-                resultWithStack.push(s[i]-'0');
+                resultWithQueue.push(s[i]-'0');
         }
         else{
             for(int i = sLength;i<tLength;++i){
-                resultWithStack.push(t[i]-'0');
+                resultWithQueue.push(t[i]-'0');
             }
         }//resultWithStack fin
         bool flag;
         int topElement;
         std::string resultWithString;
-        while(!resultWithStack.empty()){
-            topElement = resultWithStack.top();
-            resultWithStack.pop();
+        while(!resultWithQueue.empty()){
+            topElement = resultWithQueue.front();
+            resultWithQueue.pop();
             flag = topElement/10 > 0 ? true : false;
             resultWithString.push_back(topElement%10 + '0');
-            if(flag && !resultWithStack.empty()){
-                ++resultWithStack.top();
+            if(flag && !resultWithQueue.empty()){
+                ++resultWithQueue.front();
             }
         }
         if(flag)
