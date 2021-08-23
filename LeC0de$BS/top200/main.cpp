@@ -321,14 +321,42 @@ public:
     } listNode,*pListNode;
 
     void set(pListNode &head,std::unordered_map<int,pListNode> &lru_map, int key,int value){
+        //judge if the key existed.
+        auto it = lru_map.find(key);
+        if(it != lru_map.end()){//duplicated
+            //update value
+            it->second->value = value;
+            //put tail
+            if(head->value == 1)
+                return;//only one node has data.return
+            auto tail_valid_node = head;//1
+            for(int i=0;i<head->value;++i)
+                tail_valid_node = tail_valid_node->next;
+            auto first_empty_node = tail_valid_node->next;
+            auto pre_node = it->second->pre;
+            //
+            pre_node->next = it->second->next;
+            it->second->pre = pre_node;
+            //
+            tail_valid_node->next = it->second;
+            it->second->pre = tail_valid_node;
+            //
+            it->second->next = first_empty_node;
+            first_empty_node->pre = it->second;
+        }
+
+        //single key.not repeated.
         if(head->value != head->key){//not full
             auto tempPListNode = head->next;
             for(int i=0;i<head->value;++i)
                 tempPListNode = tempPListNode->next;
+            tempPListNode->key = key;
             tempPListNode->value = value;
+            ++head->value;
             lru_map.insert({key,tempPListNode});
         }
         else{//full
+            int key_toremove = head->next->key;
             auto curr_node = head->next;
             curr_node->key = key;
             curr_node->value = value;
@@ -343,9 +371,9 @@ public:
                 head->pre = curr_node;
             }
             //map
-            int key_toremove = head->next->key;
+
             pListNode node_addr = nullptr;
-            auto it = lru_map.find(key_toremove);
+            it = lru_map.find(key_toremove);
             if(it != lru_map.end()){
                 node_addr = it->second;
                 lru_map.erase(it);
@@ -357,17 +385,33 @@ public:
     int get(std::unordered_map<int,pListNode> lru_map, pListNode &head,int key){
         auto it = lru_map.find(key);
         if(it != lru_map.end()){
-            auto curr_node = it->second;
-            //
-            auto tail_node = head->pre;
-            auto next_node = curr_node->next;
-            head->next = next_node;
-            next_node->pre = head;
-            tail_node->next = curr_node;
-            curr_node->pre = tail_node;
-            curr_node->next = head;
-            head->pre = curr_node;
-            return curr_node->value;
+            if(head->value == head->key){//full
+                auto curr_node = it->second;
+                //
+                auto tail_node = head->pre;
+                auto next_node = curr_node->next;
+                head->next = next_node;
+                next_node->pre = head;
+                tail_node->next = curr_node;
+                curr_node->pre = tail_node;
+                curr_node->next = head;
+                head->pre = curr_node;
+            }
+            else{//notfull
+                auto tempPListNode = head->next;
+                for(int i=0;i<head->value;++i)
+                    tempPListNode = tempPListNode->next;
+                auto last_node = tempPListNode->pre;
+                auto pre_node = it->second->pre;
+                auto next_node = it->second->next;
+                pre_node->next = next_node;
+                next_node->pre = pre_node;
+                last_node->next = it->second;
+                it->second->pre = last_node;
+                it->second->next = tempPListNode;
+                tempPListNode->pre = it->second;
+            }
+            return it->second->value;
         }
         else
             return -1;
@@ -377,12 +421,15 @@ public:
         // write code here
         pListNode head = new listNode(); head->key=k; head->value = 0;
         pListNode pre = head;
-        pListNode next = pre->next;
+        //        pListNode next = head->next;
         for(int i=0;i<k;++i){
-            next = new listNode();
-            next->pre = pre;
-            pre = next;
-            next = next->next;
+            pre->next = new listNode();
+            if(i==k-1){
+                pre->next->next = head;
+                head->pre = pre->next;
+            }
+            pre->next->pre = pre;
+            pre = pre->next;
         }//k+1 nodes
         //
         std::unordered_map<int,pListNode> lru_map;
@@ -393,7 +440,110 @@ public:
             else
                 result.push_back(get(lru_map,head,vec[1]));
         }
-    return result;
+        return result;
+    }
+
+    //NC40  Add two linked lists to a new list
+    ListNode* addInList(ListNode* head1, ListNode* head2) {
+        // two statck
+        std::list<int> list_1,list_2;
+        while(head1 || head2){
+            if(!head1)
+                list_1.push_front(0);
+            else{
+                list_1.push_back(head1->val);
+                head1 = head1->next;
+            }
+            if(!head2)
+                list_2.push_front(0);
+            else{
+                list_2.push_back(head2->val);
+                head2 = head2->next;
+            }
+        }//list_1 and list_2 has the same size;
+        std::stack<int> sum_step_1;//may has 10.11..12...
+        for(auto it_1=list_1.begin(),it_2=list_2.begin();
+            it_1!=list_1.end();++it_1,++it_2){
+            sum_step_1.push(*it_1 + *it_2);
+        }
+        //%10
+        std::vector<int> sum_step_2;//%10
+        int top_element;
+        bool flag;
+        while(!sum_step_1.empty()){
+            top_element = sum_step_1.top();
+            sum_step_1.pop();
+            flag = top_element/10 > 0 ? true : false;
+            if(flag && !sum_step_1.empty())
+                ++sum_step_1.top();
+            sum_step_2.push_back(top_element%10);
+        }
+        if(flag)
+            sum_step_2.push_back(1);
+        //make a list to return
+        ListNode *sum_step_3 = new ListNode(-1);
+        auto temp = sum_step_3;
+        for(auto it = sum_step_2.rbegin();it!=sum_step_2.rend();++it){
+            temp->next = new ListNode(*it);
+            temp = temp->next;
+        }
+        temp = sum_step_3;
+        sum_step_3 = sum_step_3->next;
+        delete  temp;
+        return sum_step_3;
+    }
+
+
+    //NC7 The best time trading stock
+    int maxProfit(vector<int>& prices) {
+        // write code here
+        //dp[i] means saling the stock at the i day;
+        int size = prices.size();
+        int dp = 0;
+        int max=0;
+        for(int i=1;i<size;++i){
+            dp = dp>=0?dp + prices[i]-prices[i-1]:prices[i]-prices[i-1];
+            max = dp > max ? dp : max;
+        }
+        return max;
+    }
+
+    //NC1  Large number addition
+    string solve__(string s, string t) {
+        //
+        std::reverse(s.begin(),s.end());
+        std::reverse(t.begin(),t.end());
+        std::stack<int> resultWithStack;
+        int sLength = s.size();
+        int tLength = t.size();
+        for(int i=0;i<min(sLength,tLength);++i){
+            resultWithStack.push(s[i]-'0'+t[i]-'0');
+        }
+        if(sLength > tLength){
+            for(int i=tLength;i<sLength;++i)
+                resultWithStack.push(s[i]-'0');
+        }
+        else{
+            for(int i = sLength;i<tLength;++i){
+                resultWithStack.push(t[i]-'0');
+            }
+        }//resultWithStack fin
+        bool flag;
+        int topElement;
+        std::string resultWithString;
+        while(!resultWithStack.empty()){
+            topElement = resultWithStack.top();
+            resultWithStack.pop();
+            flag = topElement/10 > 0 ? true : false;
+            resultWithString.push_back(topElement%10 + '0');
+            if(flag && !resultWithStack.empty()){
+                ++resultWithStack.top();
+            }
+        }
+        if(flag)
+            resultWithString.push_back('1');
+        std::reverse(resultWithString.begin(),resultWithString.end());
+        return resultWithString;
     }
 };
 
@@ -408,10 +558,10 @@ int main()
 {
     cout << "Hello World!" << endl;
     Solution *s = new Solution();
-    vector<vector<int> >operators ={{1,1,1},{1,2,2},{1,3,2},{2,1},{1,4,4},{2,2}};
-    int k =3;
-    s->LRU(operators,k);
 
+    string s1 = "1";
+    string s2 = "99";
+    s->solve__(s1,s2);
 
 
 
