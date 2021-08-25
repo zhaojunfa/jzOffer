@@ -66,6 +66,22 @@ public:
         return i+j;
     }
 
+    //NC78
+    ListNode* ReverseList(ListNode* pHead) {
+        if(!pHead)
+            return nullptr;
+        ListNode *pre = nullptr;
+        ListNode *cur = pHead;
+        while(cur){
+            ListNode *next = cur->next;
+            cur->next = pre;
+            pre = cur;
+            cur = cur->next;
+        }
+        return pre;
+    }
+
+
     //NC41
     bool isDuplicated(std::set<int> &subArr,int &data){
         int sz = static_cast<int>(subArr.size());
@@ -560,10 +576,14 @@ int main()
     cout << "Hello World!" << endl;
     Solution *s = new Solution();
 
-    string s1 = "1";
-    string s2 = "99";
-    s->solve__(s1,s2);
+    ListNode *pHead = new ListNode(1);
+    pHead->next = new ListNode(2);
+    pHead->next->next = new ListNode(3);
+    pHead->next->next->next = new ListNode(4);
+    pHead->next->next->next->next = new ListNode(5);
 
+
+    s->ReverseList(pHead);
 
 
 }

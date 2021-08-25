@@ -362,7 +362,7 @@ public:
         //how indicates + or -
         //check
         if(serial >= (int)before.size())
-            return "0000";
+            return string(before.size(),'0');
         //operate
         if(how == 0){
             //-
@@ -383,13 +383,18 @@ public:
 
     int openLock(vector<string> &deadends,string target){
         //BFS
+        /* code in main
+    vector<string> deadends = {"0009"};
+    string target = "0008";
+    cout<<"Number of times to unlock a password lock is "<< p->openLock(deadends,target);
+*/
         int res = 0;
         queue<string> q;
         set<string> invalid;
         for(auto &str:deadends)
             invalid.insert(str);
-        q.push("0000");
-        invalid.insert("0000");
+        q.push(string(target.size(),'0'));
+        invalid.insert(string(target.size(),'0'));
         //
         while(!q.empty()){
 
@@ -414,7 +419,79 @@ public:
         }
         return -1;
     }
+    /*
 
+      As long as the array is ordered, you should think of double pointers.
+*/
+    //P69 Sum of two numbers
+    vector<int> twoSum(vector<int> &nums,int target){
+        //two pointer
+        int left =0;
+        int right =nums.size()-1;
+        int sum = nums[left]+nums[right];
+        while(left < right){
+            if(sum == target)
+                return vector<int>{nums[left],nums[right]};
+            else if(sum < target){
+                ++left;//let sum be larger
+            }
+            else{
+                --right;//make sum smaller
+            }
+        }
+        return vector<int>{-1,-1};
+    }
+
+    //1.5.2.3 Invert array
+    void reverse(vector<int> &arr){
+        int left = 0;
+        int right = arr.size()-1;
+        while(left<right){
+            int temp = arr[left];
+            arr[left] = arr[right];
+            arr[right] = temp;
+            ++left;
+            --right;
+        }
+    }
+    //Sliding window algorithm to slovle Substring matching problem
+    /*1.6.1binary search framework*/
+    /*1.6.2 search a num (basic binary search)*/
+    int binarySearch(vector<int> nums,int target){//Untested
+        int begin = 0, end = nums.size()-1;
+        int mid = begin + (end-begin)/2;
+        while(mid != end && target != nums[mid]){
+            if(target > nums[mid])
+                begin = mid+1;
+            else if (target < nums[mid])
+                end = mid;
+            mid = begin + (end - begin) /2;
+        }
+        if(nums[mid] == target)
+            return mid;
+        else
+            return -1;
+    }
+    //lbld
+    int binarySearch_p73(vector<int> nums,int target){
+        int left=0;
+        int right = nums.size()-1;
+        while(left <= right){
+            int mid =left + (right -left) / 2;
+            if(nums[mid] == target)
+                return mid;
+            else if(nums[mid] < target)
+                left = mid + 1;
+            else if(nums[mid] > target)
+                right = mid - 1;
+        }
+        return -1;
+    }
+    //left bound
+    int left_bound(vector<int> nums,int target){
+        int beg = 0,end = nums.size()-1;
+        int mid
+    }
 
 
 private:
