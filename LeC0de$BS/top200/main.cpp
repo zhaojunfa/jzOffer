@@ -17,6 +17,13 @@ struct ListNode {
     ListNode(int x) : val(x), next(NULL) {}
 };
 
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+    TreeNode(int x):val(x),left(nullptr),right(nullptr){}
+};
+
 class Solution {
 public:
     bool hasCycle(ListNode *head) {
@@ -76,7 +83,7 @@ public:
             ListNode *next = cur->next;
             cur->next = pre;
             pre = cur;
-            cur = cur->next;
+            cur = next;
         }
         return pre;
     }
@@ -562,10 +569,6 @@ public:
         std::reverse(resultWithString.begin(),resultWithString.end());
         return resultWithString;
     }
-    ListNode* EntryNodeOfLoop(ListNode* pHead) {
-
-    }
-
     //
     int calcScore(vector<vector<int>> &kArr){
         //empty vector
@@ -586,8 +589,8 @@ public:
         q.push(vector<vector<int>>(k,vector<int>()));
         int score = -100;
         while(!q.empty()){
-//            if(nums.empty())
-//                return score;
+            //            if(nums.empty())
+            //                return score;
 
             //
             int q_size = q.size();
@@ -615,6 +618,157 @@ public:
         }
         return score;
     }
+
+
+    //nc102 A
+    bool dfs_102(TreeNode *&root,int &o,vector<int> &nodes){
+        if(!root)
+            return false;
+        nodes.push_back(root->val);
+        if(root->val == o)
+            return true;
+        if(dfs_102(root->left,o,nodes))
+            return true;
+        if(dfs_102(root->right,o,nodes))
+            return true;
+        nodes.pop_back();
+        return false;
+    }
+
+    int lowestCommonAncestor(TreeNode* root, int o1, int o2) {
+        // write code here
+        vector<int> node_o1,node_o2;
+
+        auto is_exist_o1 = dfs_102(root,o1,node_o1);
+        auto is_exist_o2 = dfs_102(root,o2,node_o2);
+        if(!is_exist_o1 || !is_exist_o2)
+            return -1;
+        int top;
+        while(node_o1.front() == node_o2.front()){
+            top = node_o1.front();
+            node_o1.erase(node_o1.begin());
+            node_o2.erase(node_o2.begin());
+        }
+        return top;
+    }
+
+    //NC8 A
+    void dfs_8(vector<vector<int>> &res, vector<int> &track, int sum , TreeNode *&root){
+        if(!root)
+            return;
+        track.push_back(root->val);
+        if(!root->left && !root->right)
+        {
+            if(root->val == sum){
+                res.push_back(track);
+                track.pop_back();
+                return;
+            }
+        }
+        dfs_8(res,track,sum-root->val,root->left);
+        dfs_8(res,track,sum-root->val,root->right);
+        track.pop_back();
+    }
+
+    vector<vector<int> > pathSum(TreeNode* root, int sum) {
+        // write code here
+        vector<vector<int>> res;
+        vector<int> track;
+        dfs_8(res,track,sum,root);
+        return res;
+    }
+
+    //NC3 {1,2},{3,4,5} 3 A
+    ListNode* EntryNodeOfLoop(ListNode* pHead) {
+        ListNode *slow =pHead,*fast = pHead;
+        while(fast && fast->next){
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast){
+                slow =pHead;
+                while(slow != fast){
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+                return slow;
+            }
+        }
+        return nullptr;
+    }
+
+    //NC53  A
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // write code here
+        ListNode *slow = head, *fast = head;
+        for(int i=0;i<n;++i){
+            fast = fast->next;
+        }
+        ListNode *pre = slow;
+        while(fast){
+            pre = slow;
+            slow = slow->next;
+            fast = fast->next;
+        }
+        if(pre == slow){
+            auto temp = pre->next;
+            delete  pre;
+            return temp;
+        }
+        else{
+            pre->next = slow->next;
+            delete slow;
+            return head;
+        }
+    }
+
+
+    void createTree(TreeNode *&root,queue<int> &data){
+        auto front = data.front();
+        data.pop();
+        if(front != -1){
+            root = new TreeNode(front);
+            createTree(root->left,data);
+            createTree(root->right,data);
+        }
+        else{
+            root = nullptr;
+        }
+        return;
+    }
+    //NC14
+    vector<vector<int> > Print(TreeNode* pRoot) {
+        if(!pRoot)
+            return vector<vector<int>>();
+        vector<vector<int>> res;
+        vector<int> res_level;
+        queue<TreeNode *> q;
+        q.push(pRoot);
+//        res_level.push_back(pRoot->val);
+//        res.push_back(res_level);
+        int level = 0;
+        while(!q.empty()){
+            int sz = q.size();
+            ++level;
+            res_level.clear();
+            for(int i=0;i<sz;++i){
+                auto front = q.front();
+                q.pop();
+                res_level.push_back(front->val);
+                if(front->left)
+                    q.push(front->left);
+                if(front->right)
+                    q.push(front->right);
+            }
+            if(level % 2 == 0)
+            {
+                std::reverse(res_level.begin(),res_level.end());
+                res.push_back(res_level);
+            }
+            else
+                res.push_back(res_level);
+        }
+        return res;
+    }
 };
 
 
@@ -628,8 +782,14 @@ int main()
 {
     Solution *s = new Solution();
 
-    vector<int> nums{1,2,-3,4};
-    int k = 3;
-    cout << s->maxScore(nums,k);
+    vector<int> data{1,2,-1,-1,3,4,-1,-1,5,-1,-1};
+    queue<int> data_;
+    for(auto &num:data)
+        data_.push(num);
+    TreeNode *root =nullptr;
+    s->createTree(root,data_);
+    s->Print(root);
+
+
 
 }
