@@ -562,6 +562,59 @@ public:
         std::reverse(resultWithString.begin(),resultWithString.end());
         return resultWithString;
     }
+    ListNode* EntryNodeOfLoop(ListNode* pHead) {
+
+    }
+
+    //
+    int calcScore(vector<vector<int>> &kArr){
+        //empty vector
+        for(auto &vec:kArr)
+            if(vec.empty())
+                return -100;
+        int sum = 0, sz = kArr.size();
+        for(int i=0;i<sz;++i){
+            for(auto &ai:kArr[i])
+                sum += ai * (i+1);
+        }
+        return sum;
+    }
+
+
+    int maxScore(vector<int> &nums,int k){
+        queue<vector<vector<int>>> q;
+        q.push(vector<vector<int>>(k,vector<int>()));
+        int score = -100;
+        while(!q.empty()){
+//            if(nums.empty())
+//                return score;
+
+            //
+            int q_size = q.size();
+            for(int b=0;b<q_size;++b){
+                auto frontElement = q.front();
+                q.pop();
+                for(int i=0;i<k;++i){
+                    if(nums.empty()){
+                        int res = calcScore(frontElement);
+                        score = res > score ? res : score;
+                        for(auto &vec:frontElement){
+                            for(auto &num : vec)
+                                cout << num << ' ';
+                            cout << endl;
+                        }
+                        continue;
+                    }
+                    auto frontElement_ = frontElement;
+                    frontElement_[i].push_back(nums.back());
+                    q.push(frontElement_);
+
+                }
+            }
+            nums.pop_back();
+        }
+        return score;
+    }
 };
 
 
@@ -573,17 +626,10 @@ public:
 
 int main()
 {
-    cout << "Hello World!" << endl;
     Solution *s = new Solution();
 
-    ListNode *pHead = new ListNode(1);
-    pHead->next = new ListNode(2);
-    pHead->next->next = new ListNode(3);
-    pHead->next->next->next = new ListNode(4);
-    pHead->next->next->next->next = new ListNode(5);
-
-
-    s->ReverseList(pHead);
-
+    vector<int> nums{1,2,-3,4};
+    int k = 3;
+    cout << s->maxScore(nums,k);
 
 }
