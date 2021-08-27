@@ -771,8 +771,32 @@ public:
     }
 };
 
-
-
+class CSDN{
+public:
+    //O(log(m+n)) binaryFindKthNum
+    //part 1 min
+    int min(const int &a,const int &b){
+        return a<=b ? a : b;
+    }
+    //part2 binary find
+    int binaryFindKth(int *array1,int *array2,int len1,int len2,int k){
+        //default len1 < len2
+        if(len1 > len2)
+            return binaryFindKth(array1,array2,len2,len1,k);
+        if(len1 == 0)
+            return array2[k-1];
+        if(k==1)
+            return min(array1[0],array2[0]);
+        int k1 = min(k/2,len1);
+        int k2 = k - k1;
+        if(array1[k1-1] > array2[k2-1])
+            return binaryFindKth(array1,array2+k2,len1,len2-k2,k-k2);
+        else if(array1[k1-1] < array2[k2-1])
+            return binaryFindKth(array1+k1,array2,len1+k1,len2,k-k1);
+        else
+            return array1[k1-1];
+    }
+};
 
 
 
@@ -782,13 +806,7 @@ int main()
 {
     Solution *s = new Solution();
 
-    vector<int> data{1,2,-1,-1,3,4,-1,-1,5,-1,-1};
-    queue<int> data_;
-    for(auto &num:data)
-        data_.push(num);
-    TreeNode *root =nullptr;
-    s->createTree(root,data_);
-    s->Print(root);
+    cout << sizeof (A)<<endl<<sizeof(B)<<endl;
 
 
 
