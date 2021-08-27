@@ -796,6 +796,117 @@ public:
         else
             return array1[k1-1];
     }
+
+
+
+    //insert  erase
+    template<typename T>
+    class hash_map{
+    public :
+        int hash(int num){};
+        int insert(int &num){
+            //calc location
+            int location = hash(num);
+            //repeat
+            for(auto e : data[location]){
+                if(e == num)
+                    return -1;
+            }
+            this->data[location].push_front(num);
+            return location;
+        }
+
+        int erase(int &num){
+            int location = hash(num);
+
+            data[location].erase(std::find(data[location].begin(),data[location].end(),num),data[location].end());
+            return location;
+        }
+
+
+
+
+    private:
+        vector<list<pair<int,int>>> data;
+
+    };
+
+    class pur{
+
+    public:
+        void push(int num){
+            //lock
+            q.push(num);
+
+            //unlock
+        }
+
+        void pop(){
+            if(q.empty())
+                watiSignal();
+            //lock
+            q.pop();
+            //unlock
+        }
+
+
+    private:
+        std::queue<int> q;
+    };
+
+    //bst
+    typedef struct bst_node{
+        int val;
+        bst_node *left,*right;
+        bst_node(int x):val(x),left(nullptr),right(nullptr){}
+    } bstNode;
+
+    class map_{
+    public:
+        bool insert(int num){
+            bstNode *p = root,*pre = root;
+            while(p){
+                pre = p;
+                if(num < p->val)
+                    p = p->left;
+                else if(num > p->val)
+                    p = p->right;
+                else
+                    return false;
+            }
+            if(num < pre->val)
+            {
+                pre->left = new bstNode(num);
+            }
+            else
+                pre->right = new bstNode(num);
+            return true;
+
+        }
+
+        bool erase(int num){
+            bstNode *p = root,*pre = root;
+            //find num
+            while(p){
+                pre = p;
+                if(num < p->val)
+                    p = p->left;
+                else if(num > p->val)
+                    p = p->right;
+                else{}
+                    //num == p->val
+                    //delete
+
+            }
+        }
+
+
+
+
+    private:
+        bstNode *root;
+    };
+
 };
 
 
@@ -806,7 +917,7 @@ int main()
 {
     Solution *s = new Solution();
 
-    cout << sizeof (A)<<endl<<sizeof(B)<<endl;
+    //cout << sizeof (A)<<endl<<sizeof(B)<<endl;
 
 
 
