@@ -799,60 +799,9 @@ public:
 
 
 
-    //insert  erase
-    template<typename T>
-    class hash_map{
-    public :
-        int hash(int num){};
-        int insert(int &num){
-            //calc location
-            int location = hash(num);
-            //repeat
-            for(auto e : data[location]){
-                if(e == num)
-                    return -1;
-            }
-            this->data[location].push_front(num);
-            return location;
-        }
-
-        int erase(int &num){
-            int location = hash(num);
-
-            data[location].erase(std::find(data[location].begin(),data[location].end(),num),data[location].end());
-            return location;
-        }
 
 
 
-
-    private:
-        vector<list<pair<int,int>>> data;
-
-    };
-
-    class pur{
-
-    public:
-        void push(int num){
-            //lock
-            q.push(num);
-
-            //unlock
-        }
-
-        void pop(){
-            if(q.empty())
-                watiSignal();
-            //lock
-            q.pop();
-            //unlock
-        }
-
-
-    private:
-        std::queue<int> q;
-    };
 
     //bst
     typedef struct bst_node{
@@ -900,16 +849,97 @@ public:
             }
         }
 
-
-
-
     private:
         bstNode *root;
     };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //strcpy
+    char *strcpy(char* src,char *dst){
+        //'\0'
+        //is
+        char *src_ = src;
+        char *dst_ = dst;
+        while(*src_ != '\0'){
+            if(src_ == dst_)
+                return nullptr;
+            if(dst_)
+                ++dst_;
+        }
+        //
+        if(src == dst)
+            return src;
+        while(*src != '\0'){
+            *dst = *src;
+            //
+            ++dst;
+            ++src;
+        }
+
+    }
+
+
+
+    //qsort
+    //reverseList
+    typedef struct list_node{
+        int val;
+        list_node *next;
+        list_node(int x):val(x),next(nullptr){}
+    } Node,*pNode;
+    pNode reverseList(pNode head){
+        if(!head)
+            return nullptr;
+        if(!head->next)
+            return head;
+        pNode pre = head->next;
+        head ->next = nullptr;
+        while(pre){
+            pre ->next = head;
+
+            head = pre;
+            pre = pre->next;
+
+        }
+        return pre;
+    }
+
+
 };
 
-
+typedef struct list_node{
+    int val;
+    list_node *next;
+    list_node(int x):val(x),next(nullptr){}
+} Node,*pNode;
+pNode reverseList(pNode &head){
+    if(!head)
+        return nullptr;
+    if(!head->next)
+        return head;
+    pNode cur = head;
+    pNode pre = nullptr;
+    while(cur){
+       pNode next = cur->next;
+       cur->next = pre;
+       pre = cur;
+       cur = next;
+    }
+    return pre;
+}
 
 
 
@@ -917,8 +947,10 @@ int main()
 {
     Solution *s = new Solution();
 
-    //cout << sizeof (A)<<endl<<sizeof(B)<<endl;
+    string str("hello");
+    stringstream stream(str);
+    
 
 
-
+    return 0;
 }
