@@ -7,6 +7,10 @@
 #include <list>
 #include <queue>
 #include <unordered_map>
+#include <pthread.h>
+#include <cstdlib>
+#include <unistd.h>
+
 
 using namespace std;
 
@@ -769,188 +773,67 @@ public:
         }
         return res;
     }
-};
-
-class CSDN{
-public:
-    //O(log(m+n)) binaryFindKthNum
-    //part 1 min
-    int min(const int &a,const int &b){
-        return a<=b ? a : b;
-    }
-    //part2 binary find
-    int binaryFindKth(int *array1,int *array2,int len1,int len2,int k){
-        //default len1 < len2
-        if(len1 > len2)
-            return binaryFindKth(array1,array2,len2,len1,k);
-        if(len1 == 0)
-            return array2[k-1];
-        if(k==1)
-            return min(array1[0],array2[0]);
-        int k1 = min(k/2,len1);
-        int k2 = k - k1;
-        if(array1[k1-1] > array2[k2-1])
-            return binaryFindKth(array1,array2+k2,len1,len2-k2,k-k2);
-        else if(array1[k1-1] < array2[k2-1])
-            return binaryFindKth(array1+k1,array2,len1+k1,len2,k-k1);
-        else
-            return array1[k1-1];
-    }
-
-
-
-
-
-
-
-    //bst
-    typedef struct bst_node{
-        int val;
-        bst_node *left,*right;
-        bst_node(int x):val(x),left(nullptr),right(nullptr){}
-    } bstNode;
-
-    class map_{
-    public:
-        bool insert(int num){
-            bstNode *p = root,*pre = root;
-            while(p){
-                pre = p;
-                if(num < p->val)
-                    p = p->left;
-                else if(num > p->val)
-                    p = p->right;
-                else
-                    return false;
-            }
-            if(num < pre->val)
-            {
-                pre->left = new bstNode(num);
-            }
-            else
-                pre->right = new bstNode(num);
-            return true;
-
-        }
-
-        bool erase(int num){
-            bstNode *p = root,*pre = root;
-            //find num
-            while(p){
-                pre = p;
-                if(num < p->val)
-                    p = p->left;
-                else if(num > p->val)
-                    p = p->right;
-                else{}
-                    //num == p->val
-                    //delete
-
-            }
-        }
-
-    private:
-        bstNode *root;
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //strcpy
-    char *strcpy(char* src,char *dst){
-        //'\0'
-        //is
-        char *src_ = src;
-        char *dst_ = dst;
-        while(*src_ != '\0'){
-            if(src_ == dst_)
-                return nullptr;
-            if(dst_)
-                ++dst_;
-        }
-        //
-        if(src == dst)
-            return src;
-        while(*src != '\0'){
-            *dst = *src;
-            //
-            ++dst;
-            ++src;
-        }
-
-    }
-
-
-
-    //qsort
-    //reverseList
-    typedef struct list_node{
-        int val;
-        list_node *next;
-        list_node(int x):val(x),next(nullptr){}
-    } Node,*pNode;
-    pNode reverseList(pNode head){
-        if(!head)
-            return nullptr;
-        if(!head->next)
-            return head;
-        pNode pre = head->next;
-        head ->next = nullptr;
-        while(pre){
-            pre ->next = head;
-
-            head = pre;
-            pre = pre->next;
-
-        }
-        return pre;
-    }
 
 
 };
-
-typedef struct list_node{
-    int val;
-    list_node *next;
-    list_node(int x):val(x),next(nullptr){}
-} Node,*pNode;
-pNode reverseList(pNode &head){
-    if(!head)
-        return nullptr;
-    if(!head->next)
-        return head;
-    pNode cur = head;
-    pNode pre = nullptr;
-    while(cur){
-       pNode next = cur->next;
-       cur->next = pre;
-       pre = cur;
-       cur = next;
-    }
-    return pre;
-}
-
 
 
 int main()
 {
     Solution *s = new Solution();
-
-    string str("hello");
-    stringstream stream(str);
-    
-
-
+    void *producer(void *);
+    void *consumer(void *);
+    pthread_t pid1,pid2;
+    pthread_create(&pid1,NULL,consumer,NULL);
+    pthread_create(&pid2,NULL,producer,NULL);
+//    pthread_join(pid1,NULL);
+//    pthread_join(pid2,NULL);
+    sleep(10);
+    printf("end\n");
     return 0;
+}
+
+
+
+
+
+
+
+//producer & consumer
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
+int count_ = 0;
+void* producer(void *){
+    pthread_detach(pthread_self());
+    for(int i=0;i<1000000;++i){
+        pthread_mutex_lock(&mutex);
+        while(count_ == 4){
+            pthread_cond_wait(&cv,&mutex);
+        }
+        printf("(");
+        ++count_;
+        if(count_ == 1){
+            pthread_cond_signal(&cv);
+        }
+        pthread_mutex_unlock(&mutex);
+
+    }
+    //mutex & spin lock
+
+}
+
+void *consumer(void *){
+    pthread_detach(pthread_self());
+    for(int i=0;i<1000000;++i){
+        pthread_mutex_lock(&mutex);
+        while(count_ == 0){
+            pthread_cond_wait(&cv,&mutex);
+        }
+        printf(")");
+        --count_;
+        if(count_ == 3)
+            pthread_cond_signal(&cv);
+        pthread_mutex_unlock(&mutex);
+
+    }
 }
