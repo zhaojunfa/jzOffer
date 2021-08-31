@@ -472,11 +472,11 @@ public:
         else
             return -1;
     }
-    //lbld
+    //lbld's algorithm-basic binary search
     int binarySearch_p73(vector<int> nums,int target){
         int left=0;
         int right = nums.size()-1;
-        while(left <= right){
+        while(left <= right){//notice
             int mid =left + (right -left) / 2;
             if(nums[mid] == target)
                 return mid;
@@ -487,11 +487,165 @@ public:
         }
         return -1;
     }
-    //left bound
-    int left_bound(vector<int> nums,int target){
+    //left bound-untested
+    int left_bound(vector<int> &nums,int target){
         int beg = 0,end = nums.size()-1;
-        int mid
+        int mid = beg + (end - beg)/2;
+        while(end != mid){
+            if(target <= nums[mid])
+                end = mid;
+            else if(target > nums[mid])
+                beg = mid + 1;
+        }
+        if(nums[mid] == target)
+            return mid;
+        else
+            return -1;
     }
+    //left bound-lbld
+    int left_bound_p75(vector<int> &nums,int target){
+        if(nums.empty())
+            return -1;
+        int beg = 0;
+        int end = nums.size();//notice
+        int mid = beg + (end - beg) / 2;
+        while(beg < end){//notice || end condition: beg == end
+            if(nums[mid] > target)
+                end = mid;
+            else if(nums[mid] < target)
+                beg = mid + 1;
+            else if(nums[mid] == target)
+                end = mid;
+        }
+        return beg;//this means there are beg numbers in nums < target;
+    }
+    //right bound..
+
+    //summay: three functions:
+    //1
+    int binary_search_p83(vector<int> &nums,int target){
+        int beg = 0;
+        int end = nums.size() - 1;
+        int mid = beg + (end - beg) / 2;
+        while(beg <= end){
+            if(nums[mid] < target)
+                beg = mid + 1;
+            else if(nums[mid] > target)
+                end = mid - 1;
+            else if(nums[mid] == target)
+                return mid;
+        }
+        return -1;
+    }
+    //2
+    int left_bound_p83(vector<int> &nums,int target){
+        int beg = 0;
+        int end = nums.size();
+        int mid = beg + (end - beg) / 2;
+        while(beg <= end){
+            if(nums[mid] == target)
+                end = mid - 1;
+            else if(nums[mid] > target)
+                end = mid - 1;
+            else if(nums[mid] < target)
+                beg = mid + 1;
+        }
+        //check whether cross the border
+        if(beg >= (int)nums.size() || nums[beg] != target)
+            return -1;
+        else
+            return beg;
+    }
+    //3
+    int right_bound_p83(vector<int> &nums,int target){
+        int beg = 0;
+        int end = nums.size();
+        int mid = beg + (end - beg) / 2;
+        while(beg <= end){
+            if(target < nums[mid])
+                end = mid - 1;
+            else if(target > nums[mid])
+                beg = mid + 1;
+            else if(target == nums[mid])
+                beg = mid + 1;
+        }
+        //check
+        if(end < 0 || nums[end] != target)
+            return -1;
+        else
+            return end;
+    }
+    //1.7 slide window framework p86
+    void slidingWindow(string s,string t){
+        unordered_map<char,int> need,window;
+        for(auto c:t)
+            ++need[c];
+        int left = 0,right = 0,valid = 0;
+        //main code
+        while(right < (int)s.size()){
+            //c
+            char c = s[right];
+            ++right;
+            //update data in window
+            /* */
+
+            //print debug info..
+
+            //whether the left window shrinks
+            while(valid == (int)need.size()){
+                char d = s[left];
+                ++left;
+                //update data in window
+            }
+        }
+    }
+    /*1.7.1 minimun covering substring,eg.s = EBBANCF,t = ABC,res = BANC.we think about 4 questions:
+     * 1:what data should be updated when ++right?
+     * 2:when should stop ++right and start ++left?
+     * 3:what data should be updated when ++left?
+     * 4:when the result we want should be updated?(++right or ++left?)
+     * unordered_map<char,int> need,window.*/
+    string minWindow(string s,string t){
+        unordered_map<char,int> need,window;
+        for(auto &c:t)
+            ++need[c];
+        int left=0,right=0,valid=0;
+        int start=0,len=INT_MAX;
+        while(right < (int)s.size()){
+            static char c = s[right];
+            ++right;
+            //update data
+            if(need.count(c)){
+                ++window[c];
+                if(window[c] == need[c])
+                    ++valid;
+            }
+            //whether left window shrinks
+            while(valid == (int)need.size()){
+                //update the start & len:
+                if(right - left < len){
+                    start = left;
+                    len = right - left;
+                }
+                char d = s[left];
+                ++left;
+                if(need.count(d)){
+                    if(window[d] == need[d])
+                        --valid;
+                    --window[d];
+                }
+            }
+        }
+        if(len == INT_MAX)
+            return "";
+        else
+            return s.substr(start,len);
+    }
+    //
+
+
+
+
 
 
 private:
