@@ -8,6 +8,7 @@
 #include <queue>
 #include <unordered_map>
 #include <pthread.h>
+#include <thread>
 #include <cstdlib>
 #include <unistd.h>
 
@@ -777,63 +778,8 @@ public:
 
 };
 
+int main(){
 
-int main()
-{
-    Solution *s = new Solution();
-    void *producer(void *);
-    void *consumer(void *);
-    pthread_t pid1,pid2;
-    pthread_create(&pid1,NULL,consumer,NULL);
-    pthread_create(&pid2,NULL,producer,NULL);
-//    pthread_join(pid1,NULL);
-//    pthread_join(pid2,NULL);
-    sleep(10);
-    printf("end\n");
     return 0;
 }
 
-
-
-
-
-
-
-//producer & consumer
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
-int count_ = 0;
-void* producer(void *){
-    pthread_detach(pthread_self());
-    for(int i=0;i<1000000;++i){
-        pthread_mutex_lock(&mutex);
-        while(count_ == 4){
-            pthread_cond_wait(&cv,&mutex);
-        }
-        printf("(");
-        ++count_;
-        if(count_ == 1){
-            pthread_cond_signal(&cv);
-        }
-        pthread_mutex_unlock(&mutex);
-
-    }
-    //mutex & spin lock
-
-}
-
-void *consumer(void *){
-    pthread_detach(pthread_self());
-    for(int i=0;i<1000000;++i){
-        pthread_mutex_lock(&mutex);
-        while(count_ == 0){
-            pthread_cond_wait(&cv,&mutex);
-        }
-        printf(")");
-        --count_;
-        if(count_ == 3)
-            pthread_cond_signal(&cv);
-        pthread_mutex_unlock(&mutex);
-
-    }
-}
