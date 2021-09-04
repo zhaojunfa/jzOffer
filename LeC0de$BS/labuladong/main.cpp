@@ -605,14 +605,14 @@ public:
      * 3:what data should be updated when ++left?
      * 4:when the result we want should be updated?(++right or ++left?)
      * unordered_map<char,int> need,window.*/
-    string minWindow(string s,string t){
+    string minWindow(string &s,string &t){
         unordered_map<char,int> need,window;
         for(auto &c:t)
             ++need[c];
         int left=0,right=0,valid=0;
         int start=0,len=INT_MAX;
         while(right < (int)s.size()){
-            static char c = s[right];
+            char c = s[right];
             ++right;
             //update data
             if(need.count(c)){
@@ -641,7 +641,27 @@ public:
         else
             return s.substr(start,len);
     }
-    //
+    /*1.7.2 input string s & string t,does s contains the arrangement of t?
+    *eg. s = "helloworld",t = "oow",return true.*/
+    bool checkIncursion(string &s,string &t){
+        unordered_map<char,int> need,window;
+        for(auto &c:t)
+            ++need[c];
+        int left=0,right=0,valid=0;
+        while(right < (int)s.size()){
+            char c = s[right];
+            ++right;
+            if(need.count(c)){
+                ++window[c];
+                if(window[c] == need[c])
+                    ++valid;
+            }
+            if(valid == (int)need.size())
+                return true;
+        }
+        return false;
+    }
+    /*1.7.3*/
 
 
 
@@ -664,9 +684,16 @@ int main()
     auto p = new lbld_();
 
 
-    vector<string> deadends = {"0009"};
-    string target = "0008";
-    cout<<"Number of times to unlock a password lock is "<< p->openLock(deadends,target);
+//    vector<string> deadends = {"0009"};
+//    string target = "0008";
+//    cout<<"Number of times to unlock a password lock is "<< p->openLock(deadends,target);
+
+//    string s = "EBBANCF",t = "ABC";
+//    cout << p->minWindow(s,t);
+
+    string s = "helloworld",t = "oow";
+    cout << p->checkIncursion(s,t);
+
 
 
 
