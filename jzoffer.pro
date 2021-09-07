@@ -5,8 +5,8 @@ CONFIG -= qt
 
 SOURCES += \
     #LeC0de$BS\top200\top200.cpp\
-   # main.cpp\
-    N0te/sortAlgorithms.cpp
+   main.cpp
+    #N0te/sortAlgorithms.cpp
 
 HEADERS += \
     dataStructure.h\
