@@ -775,6 +775,102 @@ public:
         return res;
     }
 
+    /*jzoffer p86*/
+    int minInOrder(int *numbers,int index1,int index2);//todo
+    int min_86(int *numbers,int length){
+        if(numbers == nullptr || length <=0){
+            //throw new std::exception("Invalid Parameters");
+            return -1;
+        }
+        int index1=0,index2=length-1,indexMid=index1;
+        while(numbers[index1] >= numbers[index2]){
+            if(index2 - index1 == 1){
+                indexMid = index2;
+                break;
+            }
+            indexMid = index1 + (index2-index1)/2;
+            //if numbers[index1] == numbers[index2] ==numbers[indexMid] then search by Order in [numbers[index1],numbers[index2]].
+            if(numbers[index1] == numbers[index2] && numbers[index1] == numbers[indexMid])
+                return minInOrder(numbers,index1,index2);
+            //main code
+            if(numbers[index1] >= numbers[indexMid])
+                index2 = indexMid;
+            else
+                index1 = indexMid;
+        }
+        return numbers[indexMid];
+    }
+    /*jzoffer p88:PATH IN MATRIX*/
+    bool hasPathCore(const char *matrix,int rows,int cols,int row,int col,const char *str,int &pathLength,bool *visited){
+        //end condition  using backTrack!!
+        if(str[pathLength] == '\0')
+            return true;
+        //make choices
+        bool hasPath = false;
+        if(matrix[row * cols + col] == str[pathLength] && !visited[row*cols+col] && row >=0 && row <= rows && col >=0 && col <=cols){
+            ++pathLength;
+            visited[row*cols+col] = true;
+            hasPath = hasPathCore(matrix,rows,cols,row+1,col,str,pathLength,visited)
+                    || hasPathCore(matrix,rows,cols,row-1,col,str,pathLength,visited)
+                    || hasPathCore(matrix,rows,cols,row,col+1,str,pathLength,visited)
+                    || hasPathCore(matrix,rows,cols,row,col-1,str,pathLength,visited);
+            if(!hasPath){
+                --pathLength;
+                visited[row * cols + col] = false;
+            }
+        }
+        return hasPath;
+    }
+    bool hasPath(char *matrix,int rows,int cols,char *str){
+        if(matrix == nullptr || rows <= 0 || cols <= 0 || str == nullptr)
+            return false;
+        bool *visited = new bool[rows * cols];
+        memset(visited,0,rows*cols);
+        int pathLength = 0;
+        for(int i=0;i<rows;++i){
+            for(int j=0;j<cols;++j){
+                if(hasPathCore(matrix,rows,cols,i,j,str,pathLength,visited))
+                    return true;
+            }
+        }
+        delete [] visited;
+        return false;
+    }
+    /*jzoffer p92  trackback*/
+    bool check(int threshold,int rows,int cols,int row,int col,bool *visited){
+        if(row>=0 && col>=0 && row<=rows && col<=cols && getDigitSum(row)+getDigitSum(col)<=threshold && !visited[row*cols+col])
+            return true;
+        return false;
+    }
+    int getDigitSum(int num){
+        int sum =0;
+        while(num>0){
+            sum+= num%10;
+            num/=10;
+        }
+        return sum;
+    }
+    int movingCountCore(int threshold,int rows,int row,int cols,int col,bool *visited){
+        int count=0;
+        if(check(threshold,rows,cols,row,col,visited)){
+            visited[row*cols+col] = true;
+            count = 1+movingCountCore(threshold,rows,row+1,cols,col,visited)
+                    +movingCountCore(threshold,rows,row-1,cols,col,visited)
+                    +movingCountCore(threshold,rows,row,cols,col+1,visited)
+                    +movingCountCore(threshold,rows,row,cols,col-1,visited);
+        }
+        return count;
+    }
+    int movingCount(int threshold,int rows,int cols){
+        if(threshold<0||rows<=0||cols<=0)
+            return 0;
+        bool *visited = new bool[rows*cols];
+        memset(visited,0,rows*cols);
+        int count = movingCountCore(threshold,rows,0,cols,0,visited);
+        delete [] visited;
+        return count;
+    }
+
 
 };
 

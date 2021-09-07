@@ -112,7 +112,7 @@ public:
     //    }
 
     //P47 permute problem  parameter= nums= vector<int> ,  res = vector<set<int>> , track =set<int>
-    //!trackFunction
+    //trackFunction
     void permuteBackTrack(vector<int> &nums,vector<int> &track,vector<vector<int>> &res){
         //recursion function
         //end condition
