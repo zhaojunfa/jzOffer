@@ -11,6 +11,7 @@
 #include <thread>
 #include <cstdlib>
 #include <unistd.h>
+#include <map>
 
 
 using namespace std;
@@ -930,14 +931,274 @@ public:
     bool ifPowerOf2(int n){
         return (n & (n-1)) == 0 ?true:false;
     }
+    /*bd p93*/
+    /*main
+    string s("cbaebabacd"),t("abc");
+    Solution *solution = new Solution();
+    auto res = solution->findAnagrams(s,t);*/
+    vector<int> findAnagrams(string s,string t){
+        unordered_map<char,int> need,window;
+        for(char e:t)
+            ++need[e];
+        int left=0,right=0,valid=0;
+        vector<int> res;
+        while(right<(int)s.size()){
+            char c = s[right++];
+            if(need.count(c)){
+                ++window[c];
+                if(need[c] == window[c])
+                    ++valid;
+            }
+            while(right-left>=(int)t.size()){
+                if(valid == (int)need.size()){
+                    res.push_back(left);
+//                    left = right;
+//                    window.clear();
+//                    valid = 0;
+//                    break;
+                }
+                char d = s[left++];
+                if(need.count(d)){
+                    if(need[d] == window[d]--)
+                        --valid;
+                }
+            }
+        }
+        return res;
+    }
 
+    //1.7.4 "aabab"->2
+    int lengthOfLongestSubstring_dp(string &s){
+        int max = 0;
+        int d;
+        int fi = 0;
+        std::set<char> window;
+        for(int i=0;i<(int)s.size();++i){
+            if(window.insert(s[i]).second)
+                ++fi;
+            else{
+                d = i;
+                while(s[--d] != s[i]){}
+                d = i-d;
+                if(d > fi)
+                    ++fi;
+                else
+                    fi = d;
+            }
+            if(fi > max)
+                max = fi;
+        }
+        return max;
+    }
+
+    int lengthOfLongestSubstring_slidingWindow(string &s){
+        unordered_map<char,int> window;
+        int left=0,right=0,res=0;
+        while(right < (int)s.size()){
+            char c = s[right++];
+            ++window[c];
+            while(window[c]>1){
+                char d = s[left++];
+                --window[d];
+            }
+            res = max(res,right-left);
+        }
+        return res;
+    }
+    //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //1
+    void print1(){
+        int N=0,K=0;
+        cin >> N >> K;
+        int temp=0;
+        vector<vector<int>> data(N,vector<int>());
+        for(int i=0;i<N;++i){
+            for(int j=0;j<N;++j){
+                cin >> temp;
+                data[i].push_back(temp);
+            }
+        }
+        //cout K*data
+        for(int m=0;m<N;++m){
+            for(int i=0;i<N;++i){
+                for(int j=0;j<N;++j){
+                    for(int k=0;k<N;++k){
+                        cout << data[m][j];
+                    }
+                }
+                cout<<endl;
+            }
+        }
+
+    }
+
+    //2
+    void print2(){//0%???
+        int n=0;
+        cin >> n;//n=4
+        string line;
+        istringstream stream;
+        vector<int> data_line;
+        char c;
+        for(int i=0;;++i){
+            cin>>line;
+            stream.clear();
+            stream.str(line);
+            while(!stream.eof()){
+                stream>>c;
+                data_line.push_back(c-'0');
+            }
+            data_line.pop_back();
+            //get fn
+            bool isperfect = true;
+            for(int e:data_line){
+                if(e!=1 && e!=2 && e!=3){
+                    isperfect =false;
+                    break;
+                }
+            }
+            if(!isperfect){
+                //make data_line perfect..
+                std::reverse(data_line.begin(),data_line.end());
+                //
+                for(auto it = data_line.begin();it!=data_line.end();++it){
+                    int curr = *it;
+                    if(curr>3)
+                        *it=3;
+                    else if(curr==0 && it!= data_line.end()-1){//empty??
+                        *it = 3;
+                        auto it_temp = it+1;
+                        while(it_temp != data_line.end()-1 && *it_temp == 0){
+                            *it_temp = 9;
+                            ++it_temp;
+                        }
+                        --(*it_temp);
+                    }
+                }
+                std::reverse(data_line.begin(),data_line.end());
+                auto non0it = data_line.begin();
+                while(non0it != data_line.end() && *non0it == 0)
+                    ++non0it;
+                if(non0it!=data_line.begin())
+                    for(auto &e:data_line)
+                        if(e!=0)
+                            e=3;
+                for(non0it;non0it!=data_line.end();++non0it)
+                    cout<<*non0it;
+                cout << endl;
+                data_line.clear();
+                //cout endl
+            }
+            else{
+                for(auto &e:data_line)
+                    cout <<e;
+                cout<<endl;
+                data_line.clear();
+
+            }
+
+        }
+    }
+    //3
+    int Cnk(int n,int k){
+        if(k>n || k<=0)
+            return 0;
+        if(k > n/2)
+            k=n-k;
+        if(n==k)
+            return 1;
+        int sum1=1,sum2=1;
+        for(int i=0;i<k;++i){
+            sum1*=(n-i);
+            sum2*=(k-i);
+        }
+        return sum1/sum2;
+    }
+    int SUMn(int n){
+        int sum =0;
+        for(int i=1;i<n+1;++i){
+            sum += Cnk(n,i);
+        }
+        return sum;
+    }
+    int print3(){
+        int n,k;
+        cin >> n >> k;
+        string s;
+        cin >> s;
+        map<char,int> s_map;
+        for(auto ch:s)
+            ++s_map[ch];
+        for(auto it = s_map.begin();it!=s_map.end();++it){
+            it->second = SUMn(it->second);
+        }
+
+
+    }
+    void countCore(std::map<char,int> &s_map,int k,std::vector<std::set<char>> &res){
+
+    }
 
 
 
 };
 
 int main(){
+    Solution *solution = new Solution();
+    //solution->print2();
+    cout<<solution->SUMn(3);
+
+
 
     return 0;
 }
+
+
+//#include <iostream>
+//using namespace std;
+//bool next_comb(int* comb, const int n, const int k) {
+//    int i = k - 1;
+//    const int e = n - k;
+//    do
+//        comb[i]++;
+//    while (comb[i] > e + i && i--);
+//    if (comb[0] > e)
+//        return 0;
+//    while (++i < k)
+//        comb[i] = comb[i - 1] + 1;
+//    return 1;
+//}
+//int main() {
+//    int n, k;
+//    cout << "comb(n,k):" << endl;
+//    cin >> n >> k;
+//    if (n < k || k <= 0)
+//        return 0;
+//    int* comb = new int[k];
+//    for (int i = 0; i < k; i++)
+//        comb[i] = i;
+//    do
+//        for (int i = 0; i < k; cout << ((++i < k) ? ',' : '\n'))
+//            cout << comb[i] + 1;
+//    while (next_comb(comb, n, k));
+//    delete[] comb;
+//    return 0;
+//}
+
 
