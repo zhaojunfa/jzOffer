@@ -837,11 +837,6 @@ public:
         return false;
     }
     /*jzoffer p92  trackback*/
-    bool check(int threshold,int rows,int cols,int row,int col,bool *visited){
-        if(row>=0 && col>=0 && row<=rows && col<=cols && getDigitSum(row)+getDigitSum(col)<=threshold && !visited[row*cols+col])
-            return true;
-        return false;
-    }
     int getDigitSum(int num){
         int sum =0;
         while(num>0){
@@ -849,6 +844,11 @@ public:
             num/=10;
         }
         return sum;
+    }
+    bool check(int threshold,int rows,int cols,int row,int col,bool *visited){
+        if(row>=0 && col>=0 && row<=rows && col<=cols && getDigitSum(row)+getDigitSum(col)<=threshold && !visited[row*cols+col])
+            return true;
+        return false;
     }
     int movingCountCore(int threshold,int rows,int row,int cols,int col,bool *visited){
         int count=0;
@@ -870,6 +870,68 @@ public:
         delete [] visited;
         return count;
     }
+    /*jz p96*/
+    int maxProductAfterCutting_solution1(int length){
+        //dp
+        if(length<2)
+            return 0;
+        else if(length == 2)
+            return 1;
+        else if(length == 3)
+            return 2;
+        int *product = new int[length+1];
+        product[0]=0;
+        product[1]=1;
+        product[2]=2;
+        product[3]=3;
+        int max =0;
+        for(int i=4;i<=length;++i){
+            max=0;
+            for(int j=1;j<i/2;++j){
+                if(product[j]*product[i-j] > max)
+                    max = product[j]*product[i-j];
+                product[i] =max;
+            }
+        }
+        max=product[length];
+        delete [] product;
+        return max;
+    }
+
+    int maxProductAfterCutting_solution2(int length){
+        if(length<2)
+            return 0;
+        else if(length ==2)
+            return 1;
+        else if(length ==3)
+            return 2;
+        int timeOf3 = length/3;
+        if(length - timeOf3*3 == 1)
+            --timeOf3;
+        int timeOf2 = (length - 3*timeOf3)/2;
+        return (int)pow(3,timeOf3) * (int)pow(2,timeOf2);
+    }
+
+    /*jz102*/
+    int numberOf1(int n){
+        int count=0;
+        while(n){
+            ++count;
+            n = n & (n-1);
+            /*
+             * 1011 & 1010 = 1010,
+             * 1010 & 1001 = 1000,
+             * 1000 & 0111 = 0000,
+             * so count =3;*/
+        }
+        return count;
+    }
+    //if an integer is power of 2:
+    bool ifPowerOf2(int n){
+        return (n & (n-1)) == 0 ?true:false;
+    }
+
+
 
 
 };
