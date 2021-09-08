@@ -1151,9 +1151,7 @@ public:
 
 
     }
-    void countCore(std::map<char,int> &s_map,int k,std::vector<std::set<char>> &res){
 
-    }
 
 
 
@@ -1161,7 +1159,7 @@ public:
 
 int main(){
     Solution *solution = new Solution();
-    //solution->print2();
+    solution->print2();
     cout<<solution->SUMn(3);
 
 
@@ -1169,9 +1167,6 @@ int main(){
     return 0;
 }
 
-
-//#include <iostream>
-//using namespace std;
 //bool next_comb(int* comb, const int n, const int k) {
 //    int i = k - 1;
 //    const int e = n - k;
