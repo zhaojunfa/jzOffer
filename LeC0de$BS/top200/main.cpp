@@ -749,8 +749,8 @@ public:
         vector<int> res_level;
         queue<TreeNode *> q;
         q.push(pRoot);
-//        res_level.push_back(pRoot->val);
-//        res.push_back(res_level);
+        //        res_level.push_back(pRoot->val);
+        //        res.push_back(res_level);
         int level = 0;
         while(!q.empty()){
             int sz = q.size();
@@ -952,10 +952,10 @@ public:
             while(right-left>=(int)t.size()){
                 if(valid == (int)need.size()){
                     res.push_back(left);
-//                    left = right;
-//                    window.clear();
-//                    valid = 0;
-//                    break;
+                    //                    left = right;
+                    //                    window.clear();
+                    //                    valid = 0;
+                    //                    break;
                 }
                 char d = s[left++];
                 if(need.count(d)){
@@ -1007,161 +1007,178 @@ public:
     }
     //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //1
-    void print1(){
-        int N=0,K=0;
-        cin >> N >> K;
-        int temp=0;
-        vector<vector<int>> data(N,vector<int>());
-        for(int i=0;i<N;++i){
-            for(int j=0;j<N;++j){
-                cin >> temp;
-                data[i].push_back(temp);
-            }
-        }
-        //cout K*data
-        for(int m=0;m<N;++m){
-            for(int i=0;i<N;++i){
-                for(int j=0;j<N;++j){
-                    for(int k=0;k<N;++k){
-                        cout << data[m][j];
-                    }
-                }
-                cout<<endl;
-            }
-        }
-
-    }
-
-    //2
-    void print2(){//0%???
-        int n=0;
-        cin >> n;//n=4
-        string line;
-        istringstream stream;
-        vector<int> data_line;
-        char c;
-        for(int i=0;;++i){
-            cin>>line;
-            stream.clear();
-            stream.str(line);
-            while(!stream.eof()){
-                stream>>c;
-                data_line.push_back(c-'0');
-            }
-            data_line.pop_back();
-            //get fn
-            bool isperfect = true;
-            for(int e:data_line){
-                if(e!=1 && e!=2 && e!=3){
-                    isperfect =false;
-                    break;
-                }
-            }
-            if(!isperfect){
-                //make data_line perfect..
-                std::reverse(data_line.begin(),data_line.end());
-                //
-                for(auto it = data_line.begin();it!=data_line.end();++it){
-                    int curr = *it;
-                    if(curr>3)
-                        *it=3;
-                    else if(curr==0 && it!= data_line.end()-1){//empty??
-                        *it = 3;
-                        auto it_temp = it+1;
-                        while(it_temp != data_line.end()-1 && *it_temp == 0){
-                            *it_temp = 9;
-                            ++it_temp;
-                        }
-                        --(*it_temp);
-                    }
-                }
-                std::reverse(data_line.begin(),data_line.end());
-                auto non0it = data_line.begin();
-                while(non0it != data_line.end() && *non0it == 0)
-                    ++non0it;
-                if(non0it!=data_line.begin())
-                    for(auto &e:data_line)
-                        if(e!=0)
-                            e=3;
-                for(non0it;non0it!=data_line.end();++non0it)
-                    cout<<*non0it;
-                cout << endl;
-                data_line.clear();
-                //cout endl
-            }
-            else{
-                for(auto &e:data_line)
-                    cout <<e;
-                cout<<endl;
-                data_line.clear();
-
-            }
-
-        }
-    }
-    //3
-    int Cnk(int n,int k){
-        if(k>n || k<=0)
-            return 0;
-        if(k > n/2)
-            k=n-k;
-        if(n==k)
-            return 1;
-        int sum1=1,sum2=1;
-        for(int i=0;i<k;++i){
-            sum1*=(n-i);
-            sum2*=(k-i);
-        }
-        return sum1/sum2;
-    }
-    int SUMn(int n){
-        int sum =0;
-        for(int i=1;i<n+1;++i){
-            sum += Cnk(n,i);
-        }
-        return sum;
-    }
-    int print3(){
-        int n,k;
-        cin >> n >> k;
-        string s;
-        cin >> s;
-        map<char,int> s_map;
-        for(auto ch:s)
-            ++s_map[ch];
-        for(auto it = s_map.begin();it!=s_map.end();++it){
-            it->second = SUMn(it->second);
-        }
-
-
-    }
-
-
-
-
 };
 
-int main(){
-    Solution *solution = new Solution();
-    solution->print2();
-    cout<<solution->SUMn(3);
 
+
+typedef struct my_tree{
+    int data;
+    int ID;
+    my_tree *left,*right,*dad;
+    my_tree(int data_,int id):data(data_),ID(id),left(nullptr),right(nullptr),dad(nullptr){}
+} trNode;
+
+int node_sum(trNode* root){
+    if(!root)
+        return 0;
+    std::queue<trNode*> q;
+    q.push(root);
+    int sum =0;
+    while(!q.empty()){
+        auto front_ele = q.front();
+        q.pop();
+        sum += front_ele->data;
+        if(front_ele->left)
+            q.push(front_ele->left);
+        if(front_ele->right)
+            q.push(front_ele->right);
+    }
+    return sum;
+}
+
+
+int fun1(){
+    //return
+    /*4
+4 9 -7 -8
+0 1
+0 3
+1 2*/
+    int node_num = 0;
+    cin >> node_num;
+    vector<trNode *>node_array(node_num,nullptr);
+    int temp=0;
+    for(int i=0;i<node_num;++i){
+        cin >>temp;
+        node_array[i] = new trNode(temp,i);//init the node_array;
+    }
+    int temp1,temp2;
+    unordered_map<int,int> hasleft;
+    while(cin >> temp1 >> temp2){
+        // cin >> temp1 >> temp2;
+        if(hasleft.count(temp1)){
+            //this is right node
+            node_array[temp1]->right = node_array[temp2];
+            node_array[temp2]->dad = node_array[temp1];
+        }
+        else{
+            //this left node
+            ++hasleft[temp1];
+            node_array[temp1]->left = node_array[temp2];
+            node_array[temp2]->dad = node_array[temp1];
+        }
+    }
+    //we did init the tree
+    //traversal n-1 node
+    map<int,int> result;//<reslut,ID>
+    for(int i=1;i<node_num;++i){
+        //node_array[i]
+        if(node_array[i]->dad){
+            bool is_left = true;
+            auto node_dad = node_array[i]->dad;
+            if(node_dad->left == node_array[i]){
+                //left
+                node_dad->left = nullptr;
+            }
+            else{
+                node_dad->right = nullptr;
+                is_left = false;
+            }
+            int sum1 = node_sum(node_array[0]);//root 0
+            int sum2 = node_sum(node_array[i]);
+            if(is_left){
+                node_dad->left = node_array[i];
+            }
+            else
+            {
+                node_dad->right = node_array[i];
+            }
+            int res = sum1 - sum2;
+            if(res < 0)
+                res *= -1;
+            if(!result.count(res)){
+                result[res] = i;
+            }
+
+        }
+    }
+    cout<< result.rbegin()->second;
+    //    for(auto &r:result){
+    //        cout<<r.first << ':'<<r.second <<endl;
+    //    }
+    return 0;
+}
+
+bool check(int x,int y,int M,int N,bool *visited,vector<vector<int>> &mhz){
+    if(x>=0 &&y>=0 &&x<M && y <N && !visited[x*M+y] && mhz[x][y] !=0)
+        return true;
+    return false;
+}
+
+int movingCount(int x,int y,int &M,int &N,int &count,int &step,bool *visited,vector<vector<int>>& mhz){
+
+    if(check(x,y,M,N,visited,mhz)){
+       visited[x*M+y] = true;
+       count++;
+       if(x==M-1 && y == N-1){
+           cout << "curr count : "<<count<<endl;
+           if(step == -1){
+               step = count;
+
+           }
+           if(step > count){
+               step = count;
+
+           }
+           --count;
+           visited[x*M+y] = false;
+           return 0;
+       }
+       for(int i=1;i<mhz[x][y]+1;++i){
+           movingCount(x,y+i,M,N,count,step,visited,mhz);
+           movingCount(x+i,y,M,N,count,step,visited,mhz);
+       }
+       visited[x*M+y] = false;
+       --count;
+    }
+    return 0;
+}
+
+
+
+int leastStep(){
+    int M=3,N=3;
+    //cin >> M >> douhao >> N;
+    //vector<vector<int>> mhz(M,vector<int>(N,-1));
+    vector<vector<int>> mhz={{3,2,2},{0,1,0},{1,1,1}};
+
+
+//    for(int i=0;i<M;++i){
+//        for(int j=0;j<N;++j){
+//            cin >>temp;
+//            mhz[i][j] = temp;
+//        }
+//    }
+    //mhz init done
+    //0,0
+    bool *visited = new bool[M*N];
+    memset(visited,0,M*N);
+    int step = -1;
+    int count = -1;
+
+    movingCount(0,0,M,N,count,step,visited,mhz);
+    return step;
+}
+
+
+
+
+
+
+
+
+int main(){
+    cout << leastStep();
 
 
     return 0;
