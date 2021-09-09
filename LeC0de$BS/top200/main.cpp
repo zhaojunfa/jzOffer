@@ -1079,17 +1079,17 @@ public:
             if(it->at(0) != current_index_val)
                 current_index_val = it->at(0);
             else{
-                auto left = it - 1;
-                auto right = it;
+                vector<vector<int>>::iterator left = it - 1;
+                vector<vector<int>>::iterator right = it;
                 while(right != data.end() && right->at(0) == current_index_val)
                     ++right;
-                --right;
-                it = right;
+                it = right-1;
                 std::sort(left,right,compare_h);
             }
         }
         return 0;
     }
+    //
 
 
 };
@@ -1100,10 +1100,12 @@ int main(){
     //cout << movingCount_dp(M,N,mhz);
 
     auto so = new Solution();
+        vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
+        cout << so->lengthOfLIS_bs(source);
    // vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
    // cout << so->lengthOfLIS_bs(source);
 
-    so->maxEnvelopes();
+    //so->maxEnvelopes();
     return 0;
 }
 
