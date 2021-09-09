@@ -931,7 +931,7 @@ public:
     bool ifPowerOf2(int n){
         return (n & (n-1)) == 0 ?true:false;
     }
-    /*bd p93*/
+    /*lbd p93*/
     /*main
     string s("cbaebabacd"),t("abc");
     Solution *solution = new Solution();
@@ -1005,12 +1005,110 @@ public:
         }
         return res;
     }
-    //
+    //lbd chapter2 dp p101
+    int lengthOfLIS(vector<int> &source){
+        int source_size = source.size();
+        vector<int> dp(source_size,1);
+        int length=0;
+        for(int x=0;x<source_size;++x){//calc dp[x]
+            int temp = -1;
+            for(int y=0;y<x;++y){
+                if(source[y] < source[x]){
+                    if(dp[y] > temp)
+                        temp = dp[y];
+                }
+            }
+            if(temp == -1)
+                dp[x] = 1;
+            else
+                dp[x] = temp+1;
+            if(dp[x] > length)
+                length = dp[x];
+        }
+        return length;
+    }
+
+    int lengthOfLIS_bs(vector<int> &source_data){
+        /*auto so = new Solution();
+    vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
+    cout << so->lengthOfLIS_bs(source);
+    return 0;*/
+        vector<int> top(source_data.size(),0);
+        int piles = 0;
+        for(int i=0;i<(int)source_data.size();++i){
+            int poker = source_data[i];
+            //find left-bound
+            int left = 0,right = piles;
+            while(left<right){
+                int mid = left+(right-left)/2;
+                if(top[mid] > poker){
+                    right = mid;
+                }
+                else if(top[mid] < poker)
+                    left = mid +1;
+                else
+                    right = mid;
+            }
+            if(left == piles)
+                ++piles;
+            top[left] = poker;
+            for(auto e:top)
+                cout <<e << ' ';
+            cout <<endl;
+        }
+        return piles;
+    }
+
+    //dp[][]
+    /*
+     *1,8  2,3  5,4  5,2  6,7  6,4
+     *2,3=> 5,4 => 6,7
+    */
+    static bool compare_w(vector<int> &first,vector<int> &second){
+        return first[0] < second[0];
+    }
+    static bool compare_h(vector<int> &first,vector<int> &second){
+        return first[1] > second[1];
+    }
+    int maxEnvelopes(){
+        vector<vector<int>> data{{1,8},{5,4},{6,7},{5,2},{6,4},{2,3},{5,9}};
+        //sore w + h
+        std::sort(data.begin(),data.end(),compare_w);
+        int current_index_val = 0;
+        for(auto it = data.begin();it != data.end();++it){
+            if(it->at(0) != current_index_val)
+                current_index_val = it->at(0);
+            else{
+                auto left = it - 1;
+                auto right = it;
+                while(right != data.end() && right->at(0) == current_index_val)
+                    ++right;
+                --right;
+                it = right;
+                std::sort(left,right,compare_h);
+            }
+        }
+        return 0;
+    }
+
 
 };
 
 
+int main(){
+    //vector<vector<int>> mhz{{3,2,2},{0,1,0},{1,1,1}};
+    //cout << movingCount_dp(M,N,mhz);
 
+    auto so = new Solution();
+   // vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
+   // cout << so->lengthOfLIS_bs(source);
+
+    so->maxEnvelopes();
+    return 0;
+}
+
+
+//huawei1
 typedef struct my_tree{
     int data;
     int ID;
@@ -1036,8 +1134,7 @@ int node_sum(trNode* root){
     return sum;
 }
 
-
-int fun1(){
+int huawei_1(){
     //return
     /*4
 4 9 -7 -8
@@ -1103,12 +1200,12 @@ int fun1(){
         }
     }
     cout<< result.rbegin()->second;
-    //    for(auto &r:result){
-    //        cout<<r.first << ':'<<r.second <<endl;
-    //    }
+    for(int i=0;i<node_num;++i){
+        delete node_array[i];
+    }
     return 0;
 }
-
+//huawei2
 bool check(int x,int y,int M,int N,bool *visited,vector<vector<int>> &mhz){
     if(x>=0 &&y>=0 &&x<M && y <N && !visited[x*M+y] && mhz[x][y] !=0)
         return true;
@@ -1118,33 +1215,31 @@ bool check(int x,int y,int M,int N,bool *visited,vector<vector<int>> &mhz){
 int movingCount(int x,int y,int &M,int &N,int &count,int &step,bool *visited,vector<vector<int>>& mhz){
 
     if(check(x,y,M,N,visited,mhz)){
-       visited[x*M+y] = true;
-       count++;
-       if(x==M-1 && y == N-1){
-           cout << "curr count : "<<count<<endl;
-           if(step == -1){
-               step = count;
+        visited[x*M+y] = true;
+        count++;
+        if(x==M-1 && y == N-1){//end condition
+            cout << "curr count : "<<count<<endl;
+            if(step == -1){
+                step = count;
 
-           }
-           if(step > count){
-               step = count;
+            }
+            if(step > count){
+                step = count;
 
-           }
-           --count;
-           visited[x*M+y] = false;
-           return 0;
-       }
-       for(int i=1;i<mhz[x][y]+1;++i){
-           movingCount(x,y+i,M,N,count,step,visited,mhz);
-           movingCount(x+i,y,M,N,count,step,visited,mhz);
-       }
-       visited[x*M+y] = false;
-       --count;
+            }
+            --count;
+            visited[x*M+y] = false;
+            return 0;
+        }
+        for(int i=1;i<mhz[x][y]+1;++i){
+            movingCount(x,y+i,M,N,count,step,visited,mhz);
+            movingCount(x+i,y,M,N,count,step,visited,mhz);
+        }
+        visited[x*M+y] = false;
+        --count;
     }
     return 0;
 }
-
-
 
 int leastStep(){
     int M=3,N=3;
@@ -1153,12 +1248,12 @@ int leastStep(){
     vector<vector<int>> mhz={{3,2,2},{0,1,0},{1,1,1}};
 
 
-//    for(int i=0;i<M;++i){
-//        for(int j=0;j<N;++j){
-//            cin >>temp;
-//            mhz[i][j] = temp;
-//        }
-//    }
+    //    for(int i=0;i<M;++i){
+    //        for(int j=0;j<N;++j){
+    //            cin >>temp;
+    //            mhz[i][j] = temp;
+    //        }
+    //    }
     //mhz init done
     //0,0
     bool *visited = new bool[M*N];
@@ -1169,48 +1264,69 @@ int leastStep(){
     movingCount(0,0,M,N,count,step,visited,mhz);
     return step;
 }
-
-
-
-
-
-
-
-
-int main(){
-    cout << leastStep();
-
-
-    return 0;
+//huawei2_dp
+int smallestStep(vector<vector<int>> &mhz,vector<vector<int>> &dp,int M,int N,int x,int y){
+    if(mhz[x][y] == 0)
+        return INT_MAX-1;
+    int temp_step = dp[x][y];
+    for(int i =1;i<mhz[x][y]+1;++i){
+        //down
+        if(x+i>=0&&y>=0&&x+i<M&&y<N){
+            if(temp_step > dp[x+i][y])
+                temp_step = dp[x+i][y];
+        }
+        //right
+        if(x>=0&&y+i>=0&&x<M&&y+i<N){
+            if(temp_step > dp[x][y+i])
+                temp_step = dp[x][y+i];
+        }
+    }
+    return temp_step;
 }
 
-//bool next_comb(int* comb, const int n, const int k) {
-//    int i = k - 1;
-//    const int e = n - k;
-//    do
-//        comb[i]++;
-//    while (comb[i] > e + i && i--);
-//    if (comb[0] > e)
-//        return 0;
-//    while (++i < k)
-//        comb[i] = comb[i - 1] + 1;
-//    return 1;
-//}
-//int main() {
-//    int n, k;
-//    cout << "comb(n,k):" << endl;
-//    cin >> n >> k;
-//    if (n < k || k <= 0)
-//        return 0;
-//    int* comb = new int[k];
-//    for (int i = 0; i < k; i++)
-//        comb[i] = i;
-//    do
-//        for (int i = 0; i < k; cout << ((++i < k) ? ',' : '\n'))
-//            cout << comb[i] + 1;
-//    while (next_comb(comb, n, k));
-//    delete[] comb;
-//    return 0;
-//}
+int movingCount_dp(int M,int N,vector<vector<int>> &mhz){
+    if(M <=0 || N<=0 || mhz.empty())
+        return -1;
+    vector<vector<int>> dp(M,vector<int>(N,INT_MAX));//dp array
+    dp[M-1][N-1]=-1;
+    for(int i=M-1;i!=-1;--i){
+        for(int j=N-1;j!=-1;--j){
+            dp[i][j] = 1 + smallestStep(mhz,dp,M,N,i,j);
+            cout << "dp["<<i<<"]["<<j<<"]="<<dp[i][j]<<endl;
+        }
+    }
+    return dp[0][0];
+}
+
+
+//baidu3
+void permuteCount(vector<vector<char>> &res,vector<char> &data,int index,vector<char> &temp_data,int n,int k){
+    //abcde c52 -> ab ac ad ae bc .....10 combinations
+    /*main:
+     * vector<char> data{'a','b','c','d','e','f'};
+    vector<vector<char>> res;
+    int n= data.size();
+    int k =3;
+    vector<char> temp_data;
+    for(int i=0;i<n;++i){
+        permuteCount(res,data,i,temp_data,n,k);
+    }*/
+    if(index>=0 && index <n && k<=n && n-index >= k-(int)temp_data.size()){
+        temp_data.push_back(data[index]);
+        if((int)temp_data.size() == k){//end condition
+            res.push_back(temp_data);
+            temp_data.pop_back();
+            return;
+        }
+        for(int i=index+1;i<n;++i){
+            permuteCount(res,data,i,temp_data,n,k);
+        }
+        temp_data.pop_back();
+    }
+}
+
+
+
+
 
 

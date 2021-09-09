@@ -62,4 +62,26 @@
  * my turn:Internship opportunity & tutor system & post assignment
 */
 
+/*0908 baidu-xuanze
+*stabilty of  sort algorithms:
+* bubble sort:
+* selection sort:x
+* insertion sort:
+* heap sort:x
+* shell sort:x
+* q sort:x
+* merging sort:
+* radix sort:
+* counting sort:
+* 2:prim algorithm
+* 3:wc print
+* 4:quick table
+* 5:sed command
+* 6:single case
+* 7:crontab
+* 8:huffman tree
+*/
+/*
+
+*/
 
