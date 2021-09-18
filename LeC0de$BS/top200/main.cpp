@@ -1084,12 +1084,54 @@ public:
                 while(right != data.end() && right->at(0) == current_index_val)
                     ++right;
                 it = right-1;
-                std::sort(left,right,compare_h);
+                std::sort(left,right,compare_h);//todo
             }
         }
         return 0;
     }
-    //
+
+    //1
+    void getData(std::vector<int> &data,int &M){
+        int N=0;
+        cin >> N;
+        cin >> M;
+        int temp;
+        std::set<int> data_set;
+        for(int i=0;i<N;++i){
+            cin >> temp;
+            data_set.insert(temp);
+        }
+        data.assign(data_set.begin(),data_set.end());
+    }
+
+    int getMaxOFFA(){
+        std::vector<int> data;
+        std::set<std::set<int>> resu;
+        int M;
+        int res=0;
+        getData(data,M);
+        int sz = data.size();
+        if(sz < 3){
+            cout << 0;
+            return res;
+        }
+        int sumOf3 = data[sz-1]+data[sz-2]+data[sz-3];
+        if(sumOf3 %M==0)
+            ++res;
+        for(int i=sz-4;i>=0;--i){
+            sumOf3 -= data[i+3];
+            sumOf3 += data[i];
+            if((sumOf3)%M == 0)
+                ++res;
+        }
+        return res;
+
+    }
+
+    //2
+
+
+
 
 
 };
@@ -1100,12 +1142,33 @@ int main(){
     //cout << movingCount_dp(M,N,mhz);
 
     auto so = new Solution();
-        vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
-        cout << so->lengthOfLIS_bs(source);
-   // vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
-   // cout << so->lengthOfLIS_bs(source);
+    //vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
+    cout << so->getMaxOFFA();
+    // vector<int> source{6,3,5,10,11,2,9,14,13,7,4,8,12};
+    // cout << so->lengthOfLIS_bs(source);
 
     //so->maxEnvelopes();
+    //    int n;
+    //    cin >> n;
+    //    vector<int> vec(n);
+    //    unordered_map<double,int> map;
+    //    for(int i=0;i<n;++i){
+    //        cin >> vec[i];
+    //        double x = 1/(double)vec[i];
+    //        unordered_map<double,int> nmap = map;
+    //        ++map[x];
+    //        for(auto iter = nmap.begin();iter != nmap.end();++iter){
+    //            if(iter->first+x<=1)
+    //                ++map[iter->first+x];
+    //        }
+    //    }
+    //    if(map[1]!=0){
+    //        cout <<map[1]<<endl;
+    //    }
+    //    else{
+    //        cout << "No solution!"<<endl;
+    //    }
+
     return 0;
 }
 
