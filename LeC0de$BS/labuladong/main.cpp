@@ -61,7 +61,7 @@ public:
             return -1;
         if(memo.find(amount)!=memo.end())
             return memo.find(amount)->second;
-        int res = max_value;//init once
+        int res = INT_MAX;//init once
         for(auto &coin : coins){
             auto temp = dp_coin(coins,amount-coin,memo);
             if(temp == -1)
@@ -69,7 +69,7 @@ public:
             res = min(res,temp+1);
         }
         //write into memo
-        if(res != max_value)
+        if(res != INT_MAX)
             memo.insert({amount,res});
         else
             memo.insert({amount,-1});
@@ -641,36 +641,172 @@ public:
         else
             return s.substr(start,len);
     }
+
+//    string minWindow_(string &s,string &t){
+//        if(s.empty()||t.empty())
+//            return string();
+//        unordered_map<char,int> need,window;
+//        for(auto ch:t)
+//            ++need[ch];
+//        int left=0,right=0;
+//        int length=INT_MAX;
+//        int valid=0;
+//        int start=0;
+//        while(right<static_cast<int>(s.size())){
+//            char ch1=s[right++];
+//            if(need.count(ch1))
+//                if(++window[ch1]==need[ch1])
+//                    ++valid;
+//            while(valid==static_cast<int>(need.size())){
+//                if(left-right<length){
+//                    start=left;
+//                    length=left-right;
+//                }
+//                char ch2=s[left];
+//                ++left;
+//                if(need.count(ch2))
+//                    if(need[ch2]==window[ch2]--)
+//                        --valid;
+//            }
+//        }
+//        if(length==INT_MAX)
+//            return string();
+//        else
+//            return s.substr(start,length);
+//    }
     /*1.7.2 input string s & string t,does s contains the arrangement of t?
     *eg. s = "helloworld",t = "oow",return true.*/
     bool checkIncursion(string &s,string &t){
-        unordered_map<char,int> need,window;
-        for(auto &c:t)
-            ++need[c];
-        int left=0,right=0,valid=0;
-        while(right < (int)s.size()){
-            char c = s[right];
-            ++right;
-            if(need.count(c)){
-                ++window[c];
-                if(window[c] == need[c])
+        //
+        if(s.empty()||t.empty())
+            return false;
+        unordered_map<char,int> window,need;
+        for(char ch:t)
+            ++need[ch];
+        int s_size=s.size(),t_size=t.size();
+        int left=0,right=0;
+        int valid=0;
+        //int start=0;
+        while(right<s_size){
+            char ch_right=s[right++];
+            if(need.count(ch_right)){
+                if(need[ch_right]==++window[ch_right])
                     ++valid;
             }
-            if(valid == (int)need.size())
-                return true;
+            while(right-left>=t_size){
+                if(valid==static_cast<int>(need.size()))
+                    return true;
+                char ch_left=s[left++];
+                if(need.count(ch_left))
+                    if(need[ch_left]==window[ch_left]--)
+                        --valid;
+            }
         }
         return false;
     }
-    /*1.7.3*/
+    /*1.7.3找出S中所有与T的全排列-滑动窗口*/
+    vector<int> findAnagrams(string &s,string &t){
+        if(s.empty()||t.empty())
+            return vector<int>();
+        unordered_map<char,int> window,need;
+        for(char ch:t)
+            ++need[ch];
+        int left=0,right=0;
+        int valid=0;
+        int s_size=s.size(),t_size=t.size();
+        vector<int> res;
+        while(right<s_size){
+            char ch_right=s[right++];
+            if(need.count(ch_right)&&need[ch_right]==++window[ch_right])
+                ++valid;
+            while(right-left>=t_size){
+                if(valid==static_cast<int>(need.size()))
+                    res.push_back(left);
+                char ch_left=s[left++];
+                if(need.count(ch_left) && need[ch_left]==window[ch_left]--)
+                    --valid;
+            }
+        }
+        return res;
+    }
+    /*1.7.4最长不重复子串*/
+    int lengthOfLongestSubstring(string &s){
+        if(s.empty())
+            return 0;
+        int left=0,right=0;
+        int length=INT_MIN;
+        int s_size=s.size();
+        unordered_map<char,int> window;
+        while(right<s_size){
+            char ch_right=s[right++];
+            ++window[ch_right];
+            while(window[ch_right]>1)
+                --window[s[left++]];
+            length = max(right-left,length);
+        }
+        return length;
+    }
+    /*2.1.1动态规划解法-最长递增子序列LIS=longest increasing subsequence
+    14342->1,2,2,3,2->max=3*/
+    int lengthOfLIS(vector<int> &num){
+        if(num.empty())
+            return 0;
+        int num_size = num.size();
+        vector<int> dp(num_size,1);
+        for(int i=0;i<num_size;++i){
+            int max_dp=0;
+            for(int j=0;j<i;++j){
+                if(num[j] < num[i])
+                    max_dp = dp[j] > max_dp ? dp[j] : max_dp;
+            }
+            dp[i] = max_dp+1;
+        }
+        int res=0;
+        for(auto i:dp){
+            if(i > res)
+                res = i;
+        }
+        return res;
+    }
+    /*2.2信封嵌套问题
+    envelopes(int[][] envelopes);
+    54,64,67,23->return 3 aka (23-54-67)*/
+    int maxEnvelopes(vector<vector<int>> &envelopes){
+        if(envelopes.empty())
+            return 0;
+        int sz = envelopes.size();
+        std::sort(envelopes.begin(),envelopes.end(),
+                  [](vector<int> v1,vector<int> v2){return v1[0] < v2[0];});
+        int left = 0,right = 0;
+        while(left<sz){
+            while(envelopes[right][0] == envelopes[left][0]){
+                ++right;
+                if(right == sz)
+                    break;
+            }
+            std::sort(envelopes.begin()+left,envelopes.begin()+right,
+                      [](vector<int> v1,vector<int> v2){ return v1[1] > v2[1];});
+            left = right;
+        }
+        int dp_result = 0;
+        int envelopes_size = envelopes.size();
+        vector<int> dp(envelopes_size,1);
+        for(int i=0;i<envelopes_size;++i){
+            int max_dp = 0;
+            for(int j = 0; j < i;++j){
+                if(envelopes[j][0] < envelopes[i][0] && dp[j] > max_dp)
+                    max_dp = dp[j];
+            }
+            dp[i] = max_dp + 1;
+            dp_result = dp[i] > dp_result ? dp[i] : dp_result;
+        }
+        return dp_result;
+    }
 
 
 
 
-
-
-private:
-    static constexpr int max_value = -1u;
-
+public:
 };
 
 
@@ -680,25 +816,34 @@ private:
 
 int main()
 {
-    //    cout << "Hello World!" << endl;
     auto p = new lbld_();
+    vector<int> d{1,4,3,4,2};
+    vector<vector<int>> envelopes{
+        {5,4},
+        {6,4},
+        {6,7},
+        {2,3},
+        {7,8},
+        {7,6}
 
-
-//    vector<string> deadends = {"0009"};
-//    string target = "0008";
-//    cout<<"Number of times to unlock a password lock is "<< p->openLock(deadends,target);
-
-//    string s = "EBBANCF",t = "ABC";
-//    cout << p->minWindow(s,t);
-
-    string s = "helloworld",t = "oow";
-    cout << p->checkIncursion(s,t);
-
-
-
-
+    };
+    cout << "result = "<<p->maxEnvelopes(envelopes);
+    //cout << p->lengthOfLIS(d);
     return 0;
-
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
