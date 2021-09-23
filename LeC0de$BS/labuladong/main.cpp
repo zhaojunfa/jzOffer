@@ -642,38 +642,38 @@ public:
             return s.substr(start,len);
     }
 
-//    string minWindow_(string &s,string &t){
-//        if(s.empty()||t.empty())
-//            return string();
-//        unordered_map<char,int> need,window;
-//        for(auto ch:t)
-//            ++need[ch];
-//        int left=0,right=0;
-//        int length=INT_MAX;
-//        int valid=0;
-//        int start=0;
-//        while(right<static_cast<int>(s.size())){
-//            char ch1=s[right++];
-//            if(need.count(ch1))
-//                if(++window[ch1]==need[ch1])
-//                    ++valid;
-//            while(valid==static_cast<int>(need.size())){
-//                if(left-right<length){
-//                    start=left;
-//                    length=left-right;
-//                }
-//                char ch2=s[left];
-//                ++left;
-//                if(need.count(ch2))
-//                    if(need[ch2]==window[ch2]--)
-//                        --valid;
-//            }
-//        }
-//        if(length==INT_MAX)
-//            return string();
-//        else
-//            return s.substr(start,length);
-//    }
+    //    string minWindow_(string &s,string &t){
+    //        if(s.empty()||t.empty())
+    //            return string();
+    //        unordered_map<char,int> need,window;
+    //        for(auto ch:t)
+    //            ++need[ch];
+    //        int left=0,right=0;
+    //        int length=INT_MAX;
+    //        int valid=0;
+    //        int start=0;
+    //        while(right<static_cast<int>(s.size())){
+    //            char ch1=s[right++];
+    //            if(need.count(ch1))
+    //                if(++window[ch1]==need[ch1])
+    //                    ++valid;
+    //            while(valid==static_cast<int>(need.size())){
+    //                if(left-right<length){
+    //                    start=left;
+    //                    length=left-right;
+    //                }
+    //                char ch2=s[left];
+    //                ++left;
+    //                if(need.count(ch2))
+    //                    if(need[ch2]==window[ch2]--)
+    //                        --valid;
+    //            }
+    //        }
+    //        if(length==INT_MAX)
+    //            return string();
+    //        else
+    //            return s.substr(start,length);
+    //    }
     /*1.7.2 input string s & string t,does s contains the arrangement of t?
     *eg. s = "helloworld",t = "oow",return true.*/
     bool checkIncursion(string &s,string &t){
@@ -806,8 +806,140 @@ public:
 
 
 
+
 public:
 };
+
+void getData_0923(vector<int> &vec,int &length){
+    cin >> length;
+    int temp=0;
+    for(int i=0;i<length;++i){
+        cin >> temp;
+        vec.push_back(temp);
+    }
+}
+
+void func_0923(vector<int> &vec){
+    if(vec.empty())
+        return;
+    int sz = vec.size();
+    vector<int> res;
+    //res.push_back(vec[0]);
+    cout << vec[0]<<' ';
+    int ji_sum = vec[0];
+    int ou_sum =0;
+    int curr =0;
+    for(int i=1;i<sz;++i){
+        if(i%2==1){
+            curr=ji_sum - ou_sum - vec[i];
+            ou_sum += curr;
+        }
+        else{
+            curr = vec[i] + ou_sum - ji_sum;
+            ji_sum += curr;
+
+        }
+        cout << curr <<' ';
+    }
+}
+
+int calc_week(double c,double y,double m,double d){
+    if(m==1){
+        m=13;
+        --y;
+    }
+    if(m==2){
+        m=14;--y;
+    }
+    int w = (int)(y+(int)(y/4) + (int)(c/4)-2*c+(int)(13*(m+1)/5) +d -1 )%7;
+    return w;
+}
+int calWeek(int y,int m,int d){
+    if(m<1 ||m>12 || d<1 ||d>31)
+        return -1;
+    if(m==1){
+        m=13;
+        --y;
+    }
+    if(m==2){
+        m=14;--y;
+    }
+    int c = y / 100;
+
+    y = y - c * 100;
+
+    int week = y + y / 4 + c / 4 - 2 * c + 26 * (m + 1) / 10 + d - 1;
+
+    week %= 7;
+
+    week = week < 0 ? week + 7 : week;
+
+    return week;
+
+}
+
+
+
+
+int Mon(int A,int B){
+    if(A>2100 || A<1900 || B>2100 || B <1900)
+        return 0;
+    int res =0;
+    for(int i=A;i<=B;++i){
+        for(int j=1;j<=12;++j){
+            int y = i % 100;
+            int c = i / 100;
+            int wek = calc_week(c,y,j,1);
+            if(wek==1)
+                ++res;
+        }
+    }
+    return res;
+}
+
+
+void get_data_0923_3(int &n,int &m,int &x,int &y,vector<vector<int>> &vec,string &inst){
+    cin >> n >> m >> x >> y;
+    int temp_int;
+    for(int i = 0;i<n;++i){
+        vector<int> temp;
+        for(int j=0;j<m;++j){
+            cin >> temp_int;
+            temp.push_back(temp_int);
+        }
+        vec.push_back(temp);
+    }
+    char ch;
+    while(cin >> ch){
+        inst.push_back(ch);
+    }
+}
+
+int calWeek_(int y,int m,int d){
+    if(m<1 ||m>12 || d<1 ||d>31)
+        return -1;
+    if(m==1){
+        m=13;
+        --y;
+    }
+    if(m==2){
+        m=14;--y;
+    }
+    int c = y / 100;
+
+    y = y - c * 100;
+
+    int week = y + y / 4 + c / 4 - 2 * c + 26 * (m + 1) / 10 + d - 1;
+
+    week %= 7;
+
+    week = week < 0 ? week + 7 : week;
+
+    return week;
+
+}
+
+
 
 
 
@@ -816,20 +948,80 @@ public:
 
 int main()
 {
-    auto p = new lbld_();
-    vector<int> d{1,4,3,4,2};
-    vector<vector<int>> envelopes{
-        {5,4},
-        {6,4},
-        {6,7},
-        {2,3},
-        {7,8},
-        {7,6}
+    int n,m,x,y;
+    vector<vector<int>> vec;
+    string inst;
+    get_data_0923_3(n,m,x,y,vec,inst);
+    int sz =inst.size();
+    int res =0;
+    int i=0,j=0;
+    for(int p=0;p<sz;++p){
+        char ch = inst[p];
+        char last_ch;
+        if(p!=0)
+            last_ch = inst[p-1];
+        else
+            last_ch = '#';
 
-    };
-    cout << "result = "<<p->maxEnvelopes(envelopes);
-    //cout << p->lengthOfLIS(d);
-    return 0;
+        //kjhi
+        //qiangbi + zhangaiwu + maxF
+        if(ch == 'k'){
+            if(last_ch != '#' && last_ch != ch)
+            { res += x;}
+            if(i==0 || vec[i-1][j] == -1)
+                res += y;//pengqiang
+            else{
+                int tempF = vec[i-1][j];
+                if(vec[i][j]>vec[i-1][j])
+                    tempF = vec[i][j];
+                res += tempF;
+                --i;
+            }
+        }
+        else if(ch == 'j'){
+            if(last_ch != '#' && last_ch != ch)
+                res += x;
+            if(i==n-1 || vec[i+1][j] == -1)
+                res += y;//pengqiang
+            else{
+                int tempF = vec[i+1][j];
+                if(vec[i][j]>vec[i+1][j])
+                    tempF = vec[i][j];
+                res += tempF;
+                ++i;
+            }
+
+        }
+        else if(ch == 'h'){
+            if(last_ch != '#' && last_ch != ch)
+                res += x;
+            if(j==0 || vec[i][j-1] == -1)
+                res += y;//pengqiang
+            else{
+                int tempF = vec[i][j-1];
+                if(vec[i][j]>vec[i][j-1])
+                    tempF = vec[i][j];
+                res += tempF;
+                --j;
+            }
+
+        }
+        else if(ch == 'l'){
+            if(last_ch != '#' && last_ch != ch)
+                res += x;
+            if(j==m-1 || vec[i][j+1] == -1)
+                res += y;//pengqiang
+            else{
+                int tempF = vec[i][j+1];
+                if(vec[i][j]>vec[i][j+1])
+                    tempF = vec[i][j];
+                res += tempF;
+                ++j;
+            }
+        }
+    }
+    cout << res;
+    return res;
 }
 
 
