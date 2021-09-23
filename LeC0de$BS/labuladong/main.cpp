@@ -875,7 +875,6 @@ int calWeek(int y,int m,int d){
     week = week < 0 ? week + 7 : week;
 
     return week;
-
 }
 
 
@@ -915,29 +914,6 @@ void get_data_0923_3(int &n,int &m,int &x,int &y,vector<vector<int>> &vec,string
     }
 }
 
-int calWeek_(int y,int m,int d){
-    if(m<1 ||m>12 || d<1 ||d>31)
-        return -1;
-    if(m==1){
-        m=13;
-        --y;
-    }
-    if(m==2){
-        m=14;--y;
-    }
-    int c = y / 100;
-
-    y = y - c * 100;
-
-    int week = y + y / 4 + c / 4 - 2 * c + 26 * (m + 1) / 10 + d - 1;
-
-    week %= 7;
-
-    week = week < 0 ? week + 7 : week;
-
-    return week;
-
-}
 
 
 
