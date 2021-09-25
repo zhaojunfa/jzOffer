@@ -642,38 +642,38 @@ public:
             return s.substr(start,len);
     }
 
-//    string minWindow_(string &s,string &t){
-//        if(s.empty()||t.empty())
-//            return string();
-//        unordered_map<char,int> need,window;
-//        for(auto ch:t)
-//            ++need[ch];
-//        int left=0,right=0;
-//        int length=INT_MAX;
-//        int valid=0;
-//        int start=0;
-//        while(right<static_cast<int>(s.size())){
-//            char ch1=s[right++];
-//            if(need.count(ch1))
-//                if(++window[ch1]==need[ch1])
-//                    ++valid;
-//            while(valid==static_cast<int>(need.size())){
-//                if(left-right<length){
-//                    start=left;
-//                    length=left-right;
-//                }
-//                char ch2=s[left];
-//                ++left;
-//                if(need.count(ch2))
-//                    if(need[ch2]==window[ch2]--)
-//                        --valid;
-//            }
-//        }
-//        if(length==INT_MAX)
-//            return string();
-//        else
-//            return s.substr(start,length);
-//    }
+    //    string minWindow_(string &s,string &t){
+    //        if(s.empty()||t.empty())
+    //            return string();
+    //        unordered_map<char,int> need,window;
+    //        for(auto ch:t)
+    //            ++need[ch];
+    //        int left=0,right=0;
+    //        int length=INT_MAX;
+    //        int valid=0;
+    //        int start=0;
+    //        while(right<static_cast<int>(s.size())){
+    //            char ch1=s[right++];
+    //            if(need.count(ch1))
+    //                if(++window[ch1]==need[ch1])
+    //                    ++valid;
+    //            while(valid==static_cast<int>(need.size())){
+    //                if(left-right<length){
+    //                    start=left;
+    //                    length=left-right;
+    //                }
+    //                char ch2=s[left];
+    //                ++left;
+    //                if(need.count(ch2))
+    //                    if(need[ch2]==window[ch2]--)
+    //                        --valid;
+    //            }
+    //        }
+    //        if(length==INT_MAX)
+    //            return string();
+    //        else
+    //            return s.substr(start,length);
+    //    }
     /*1.7.2 input string s & string t,does s contains the arrangement of t?
     *eg. s = "helloworld",t = "oow",return true.*/
     bool checkIncursion(string &s,string &t){
@@ -803,11 +803,133 @@ public:
         return dp_result;
     }
 
-
-
+    //#include<bits/stdc++.h>
+    //using namespace std;
 
 public:
 };
+
+
+
+
+//1
+void get_data_1(vector<int> &data,int &N){
+    cin >> N;
+    data.push_back(INT_MAX);//left
+    for(int i=0;i<N;++i){
+        int temp=0;
+        cin >> temp;
+        data.push_back(temp);
+    }
+    data.push_back(INT_MAX);//right
+}
+
+
+int maxyoushui(){
+    //    vector<int> data;
+    //    int N;
+
+    vector<int> data{100,5,1,2,1,5,100};
+    int N=5;
+
+    //get_data_1(data,N);
+    if(data.empty())
+        return 0;//invalid input
+    //
+    vector<int> dp(N+2,1);
+    dp[0] = 0;
+    dp[N+1] =0;
+    int result=1;
+    for(int i=1;i<=N;++i){
+        //get dp[i]
+        int currentNum = data[i];
+        //left
+        int leftNum=0;
+        int leftcurrMax = currentNum;
+        for(int j=i-1;j>=0;--j){
+            if(data[j] < leftcurrMax){
+                ++leftNum;
+                leftcurrMax = data[j];
+            }
+            else
+                break;
+        }
+        //right
+        int rightNum=0;
+        int rightcurrMax = currentNum;
+        for(int k=i+1;k<N+2;++k){
+            if(data[k] < rightcurrMax){
+                ++rightNum;
+                rightcurrMax = data[k];
+            }
+            else
+                break;
+        }
+        //1+
+        dp[i] = dp[i] + leftNum + rightNum;
+        result = dp[i] > result ? dp[i] : result;
+    }
+    return result;
+}
+
+
+void getdata2(int &N,vector<int> &data){
+    cin >>N;
+    for(int i=0;i<N;++i){
+        int t;
+        cin >> t;
+        data.push_back(t);
+    }
+}
+
+int saf(){
+//    vector<int> data;
+//    int N;
+//    getdata2(N,data);
+
+    vector<int> data{6,6,6,6,2,3,3,3};
+    //int N=8;
+//    getdata2(N,data);
+
+
+
+    if(data.empty())
+        return 0;
+
+    int sz = data.size();
+    int curMax=data[sz-1];
+    int lastindex=sz-1;
+    for(int j=sz-2;j>=0;--j)
+    {
+        if(data[j] <= curMax){
+            curMax = data[j];
+            lastindex = j;
+            continue;
+        }
+        else
+            break;
+    }
+    vector<int> target;
+    //int currmaxp=data[0];
+
+    target.push_back(data[0]);
+    for(int i=1;i<lastindex;++i){
+        int s=0;
+        if(data[0]-i > data[i])
+            s=data[i];
+        else if(data[0]-i <= data[i])
+            s=data[0]-i;
+        if(data[sz-1]-s == sz-1 -lastindex)
+            s = s + 1;
+        target.push_back(s);
+    }
+    int sum=0;
+    for(int j=0;j<lastindex;++j){
+        sum = sum + (data[j] - target[j]);
+    }
+
+    return sum;
+}
 
 
 
@@ -816,19 +938,8 @@ public:
 
 int main()
 {
-    auto p = new lbld_();
-    vector<int> d{1,4,3,4,2};
-    vector<vector<int>> envelopes{
-        {5,4},
-        {6,4},
-        {6,7},
-        {2,3},
-        {7,8},
-        {7,6}
+    cout << saf();
 
-    };
-    cout << "result = "<<p->maxEnvelopes(envelopes);
-    //cout << p->lengthOfLIS(d);
     return 0;
 }
 
