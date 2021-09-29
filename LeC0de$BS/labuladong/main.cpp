@@ -584,7 +584,7 @@ public:
         //main code
         while(right < (int)s.size()){
             //c
-            char c = s[right];
+            //char c = s[right];
             ++right;
             //update data in window
             /* */
@@ -593,7 +593,7 @@ public:
 
             //whether the left window shrinks
             while(valid == (int)need.size()){
-                char d = s[left];
+                //char d = s[left];
                 ++left;
                 //update data in window
             }
@@ -1039,6 +1039,137 @@ int saf(){
     return sum;
 }
 
+vector<string> x_X(vector<char> sid,int size){
+    //
+    queue<pair<string,int>> que;
+    int n = sid.size();
+    for(int i=0;i<n;++i){
+        string s;
+        s += sid[i];
+        que.emplace(s,1<<i);
+    }
+    vector<string> res;
+    while(!que.empty()){
+        string s = que.front().first;
+        int x = que.front().second;
+        que.pop();
+        if((int)s.size() == size){
+            res.emplace_back(s);
+            continue;
+        }
+        for(int i=0;i<n;++i){
+            int t=x;
+            string st =s;
+            if((t | 1<<i) == t)
+                continue;
+            else{
+                st += sid[i];
+                t = t|1<<i;
+                que.emplace(st,t);
+            }
+        }
+
+    }
+    set<string> st(res.begin(),res.end());
+    res.assign(st.begin(),st.end());
+    return res;
+}
+
+int main23()
+{
+    int n;
+    cin >> n;
+    unordered_map<double,int> map;
+    while(n--){
+        int x;
+        cin >> x;
+        double t = 1 / (double)x;
+        unordered_map<double,int> tmp = map;
+        for(auto iter = tmp.begin();iter!=tmp.end();++iter){
+            if(iter->first + t < 1){
+                map[iter->first+t]=1;
+            }
+            if(iter->first+t==1){
+                map[1]++;
+            }
+        }
+        //map.insert({t,1});
+        map[t]=1;
+    }
+    int x = map[1];
+    if(x == 0){
+        cout << "No Solution!" <<endl;
+    }
+    else
+        cout <<x <<endl;
+
+    return 0;
+}
+
+
+
+//27
+void get_data_27_1(int &N,int &M,vector<int> &vec){
+    cin >> N;
+    cin >> M;
+    int t;
+    std::set<int> set;
+    for(int i=0;i<N;++i){
+        cin >> t;
+        if(!set.insert(t).second == false)
+            vec.push_back(t);
+    }
+}
+
+
+int x(vector<int> &sid,int size,int M){
+    //
+    queue<pair<vector<int>,int>> que;
+    int n = sid.size();
+    for(int i=0;i<n;++i){
+        vector<int> s;
+        s.push_back(sid[i]);
+        que.emplace(s,1<<i);
+    }
+    vector<vector<int>> res;
+    std::set<vector<int>> res_;
+    while(!que.empty()){
+        vector<int> s = que.front().first;
+        int x = que.front().second;
+        que.pop();
+        if((int)s.size() == size && (s[0]+s[1]+s[2])%M==0){
+            //res.emplace_back(s);
+            vector<int> t ;
+            t.assign(s.begin(),s.end());
+            std::sort(t.begin(),t.end());
+            res_.insert(t);
+            continue;
+        }
+        for(int i=0;i<n;++i){
+            int t=x;
+            vector<int> st =s;
+            if((t | 1<<i) == t)
+                continue;
+            else{
+                st.push_back(sid[i]);
+                t = t|1<<i;
+                que.emplace(st,t);
+            }
+        }
+
+    }
+//    for(auto &ch:res){
+//        std::sort(ch.begin(),ch.end());
+//    }
+//    set<vector<int>> st(res.begin(),res.end());
+//    res.assign(st.begin(),st.end());
+//    int sz = 0;
+//    for(auto ch:res){
+//        if((ch[0]+ch[1]+ch[2]) % M == 0)
+//            ++sz;
+//    }
+    return res_.size();
+}
 
 
 
@@ -1046,80 +1177,9 @@ int saf(){
 
 int main()
 {
-    int n,m,x,y;
-    vector<vector<int>> vec;
-    string inst;
-    get_data_0923_3(n,m,x,y,vec,inst);
-    int sz =inst.size();
-    int res =0;
-    int i=0,j=0;
-    for(int p=0;p<sz;++p){
-        char ch = inst[p];
-        char last_ch;
-        if(p!=0)
-            last_ch = inst[p-1];
-        else
-            last_ch = '#';
 
-        //kjhi
-        //qiangbi + zhangaiwu + maxF
-        if(ch == 'k'){
-            if(last_ch != '#' && last_ch != ch)
-            { res += x;}
-            if(i==0 || vec[i-1][j] == -1)
-                res += y;//pengqiang
-            else{
-                int tempF = vec[i-1][j];
-                if(vec[i][j]>vec[i-1][j])
-                    tempF = vec[i][j];
-                res += tempF;
-                --i;
-            }
-        }
-        else if(ch == 'j'){
-            if(last_ch != '#' && last_ch != ch)
-                res += x;
-            if(i==n-1 || vec[i+1][j] == -1)
-                res += y;//pengqiang
-            else{
-                int tempF = vec[i+1][j];
-                if(vec[i][j]>vec[i+1][j])
-                    tempF = vec[i][j];
-                res += tempF;
-                ++i;
-            }
 
-        }
-        else if(ch == 'h'){
-            if(last_ch != '#' && last_ch != ch)
-                res += x;
-            if(j==0 || vec[i][j-1] == -1)
-                res += y;//pengqiang
-            else{
-                int tempF = vec[i][j-1];
-                if(vec[i][j]>vec[i][j-1])
-                    tempF = vec[i][j];
-                res += tempF;
-                --j;
-            }
-
-        }
-        else if(ch == 'l'){
-            if(last_ch != '#' && last_ch != ch)
-                res += x;
-            if(j==m-1 || vec[i][j+1] == -1)
-                res += y;//pengqiang
-            else{
-                int tempF = vec[i][j+1];
-                if(vec[i][j]>vec[i][j+1])
-                    tempF = vec[i][j];
-                res += tempF;
-                ++j;
-            }
-        }
-    }
-    cout << res;
-    return res;
+    return 0;
 }
 
 
