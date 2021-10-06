@@ -1172,11 +1172,265 @@ int x(vector<int> &sid,int size,int M){
 }
 
 
+//29
+int getIndexFromHourAndMinute(int hour,int minute){
+    return hour*60+minute;
+}
+
+void printYingyeInfo(int hour,int minute){
+    int t1,t2,t3,t4;
+    t1=hour/10;
+    t2=hour%10;
+    t3=minute/10;
+    t4=minute%10;
+    cout<<t1<<t2<<':'<<t3<<t4;
+}
+
+
+
+
+void getdata291(vector<int> &day_minutes){
+    int isyingye;
+    while(cin >> isyingye){
+
+        char ch;
+        cin >> ch;//,
+        int t1,t2,start_hour,start_minute,end_hour,end_minute;
+        cin >> t1 >> t2;
+        start_hour = 10*t1+t2;
+        cin >> ch;//:
+        cin >> t1 >> t2;
+        start_minute = 10*t1+t2;
+        cin >> ch;//-
+        cin >> t1 >> t2;
+        end_hour = 10*t1+t2;
+        cin >> ch;//:
+        cin >> t1 >> t2;
+        cin >> ch ;
+        end_minute = 10*t1+t2;
+        if(isyingye == 1){
+            int start_index = start_hour*60+start_minute;
+            int end_index = end_hour*60+end_minute;
+            for(int i = start_index;i<=end_index;++i)
+                day_minutes[i]=1;
+        }
+        else{
+            int start_index = start_hour*60+start_minute+1;
+            int end_index = end_hour*60+end_minute;
+            for(int i = start_index;i<=end_index;++i)
+                day_minutes[i]=0;
+        }
+        if(ch!=';')
+            break;
+
+    }
+    //
+    int tt = 60*24;
+    int time=0;
+    for(int kk=0;kk<tt;++kk){
+
+        int startindex;
+        int endindex;
+        if(day_minutes[kk]==0)
+            continue;
+        else{
+            if(time!=0){
+                cout<<';';
+            }
+            ++time;
+            startindex = kk;
+            while(kk < tt && day_minutes[kk]==1){
+                ++kk;
+            }
+//            --kk;
+            endindex=kk-1;
+            int start_hour,start_minute,end_hour,end_minute;
+            start_hour = startindex/60;
+            start_minute = startindex%60;
+            end_hour = endindex/60;
+            end_minute = endindex%60;
+            printYingyeInfo(start_hour,start_minute);
+            cout<<'-';
+            printYingyeInfo(end_hour,end_minute);
+
+        }
+
+    }
+}
+//0930_1
+int getDa_1(){
+    unordered_map<char,int> map;
+    map['T']=-1;
+    map['R']=1;
+    map['I']=-1;
+    map['P']=1;
+    int n;
+    cin >> n;
+    char temp;
+    string data;
+    for(int i=0;i<n;++i){
+        cin >> temp;
+        data.push_back(temp);
+    }
+    //vector<string> subString;
+    int res = 0;
+    pair<int,int> zerozero;
+    for(int i=0;i<n;++i){
+        //string sub;
+        zerozero.first=0;
+        zerozero.second=0;
+        for(int j=i;j<n;++j){
+            if(data[j]=='T' || data[j]=='R')
+                zerozero.first+=map[data[j]];
+            else
+               zerozero.second+=map[data[j]];
+            if(zerozero.first==0 && zerozero.second==0)
+                ++res;
+        }
+    }
+
+    return res;
+}
+
+//0930_2
+std::set<vector<int>> x_30(vector<int> &sid,long long size){
+    //
+    queue<pair<vector<int>,long long>> que;
+    long long n = sid.size();
+    for(long long i=0;i<n;++i){
+        vector<int> s;
+        s.push_back(sid[i]);
+        que.emplace(s,1<<i);
+    }
+    vector<vector<int>> res;
+    std::set<vector<int>> res_;
+    while(!que.empty()){
+        vector<int> s = que.front().first;
+        long long x = que.front().second;
+        que.pop();
+        if((long long)s.size() == size){
+            //res.emplace_back(s);
+            vector<int> t ;
+            t.assign(s.begin(),s.end());
+            std::sort(t.begin(),t.end());
+            res_.insert(t);
+            continue;
+        }
+        for(long long i=0;i<n;++i){
+            long long t=x;
+            vector<int> st =s;
+            if((t | 1<<i) == t)
+                continue;
+            else{
+                st.push_back(sid[i]);
+                t = t|1<<i;
+                que.emplace(st,t);
+            }
+        }
+
+    }
+
+//    set<vector<int>> st(res.begin(),res.end());
+//    res.assign(st.begin(),st.end());
+//    int sz = 0;
+
+    return res_;
+}
+
+
+
+int getD_2(){
+    int res=0;
+    int n,m;
+    cin>>n>>m;
+    int temp;
+    vector<int> w;
+    int L,R;
+    //cin
+    vector<int> index;
+    for(int i=0;i<n;++i){
+        cin>>temp;
+        w.push_back(temp);
+        index.push_back(i);
+    }
+    cin >>L>>R;
+    std::set<vector<int>> res_poss;
+    res_poss = x_30(index,(long long)m);
+    for(auto ch:res_poss){
+        int sum=0;
+        for(auto ch2:ch){
+            sum+=w[ch2];
+        }
+        if(sum <=R && sum>=L)
+            ++res;
+    }
+    return res;
+}
+
+void printChar(int index,string &res){
+    char c = 'A'+index;
+    res.push_back(c);
+    //cout<<c;
+}
+
+void ha(vector<int> &line){//size =26
+    string res;
+    int sum=0;
+    for(auto s:line)
+        sum+=s;
+    int justcout_index=-1;
+    while(sum!=0){
+        bool isbig=false;
+        for(int i=0;i<26;++i){
+            if(line[i]>sum/2){
+                isbig=true;
+                if(line[i]==sum){
+                    if(sum==1 && justcout_index==-1)
+                    {
+
+                    res.clear();
+                    res.push_back('!');
+                    sum=0;
+                    break;
+                    }
+                }
+                printChar(i,res);
+                --line[i];
+                --sum;
+                justcout_index =i;
+                break;
+            }
+        }
+        if(isbig==false){
+            for(int i=0;i<26;++i){
+                if(line[i]==0 || i==justcout_index)
+                    continue;
+                printChar(i,res);
+                --line[i];
+                --sum;
+                justcout_index = i;
+                break;
+            }
+        }
+    }
+    cout <<res<<endl;
+}
+
+
+void hald(){
+
+}
+
 
 
 
 int main()
 {
+    vector<int> d(26,0);
+    d[0]=4;
+    d[1]=1;
+    d[2]=4;
+    ha(d);
 
 
     return 0;

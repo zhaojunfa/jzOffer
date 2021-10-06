@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>joy.ico</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>filereceiver</class>
+ <widget class="QWidget" name="filereceiver">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>366</width>
+    <height>288</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>filereceiver</string>
+  </property>
+  <widget class="QPushButton" name="push_button_SEND">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>138</y>
+     <width>86</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 14pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>SEND</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_filePath_to_save">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>42</y>
+     <width>280</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+
+
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_local_ipaddr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>202</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>127.0.0.1</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_button_setPathtoSave">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>41</y>
+     <width>87</width>
+     <height>49</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string/>
+   </property>
+   <property name="whatsThis">
+    <string/>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Select
+Save Path</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_button_startFrpAndListen">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>0</y>
+     <width>86</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>START</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_local_port">
+   <property name="geometry">
+    <rect>
+     <x>211</x>
+     <y>0</y>
+     <width>69</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>7010</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>0</y>
+     <width>16</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="push_button_selectFiletoSend">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>90</y>
+     <width>87</width>
+     <height>49</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 10pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>Select file</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_filePath_selected_file_path">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>90</y>
+     <width>280</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 12pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+
+
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>C:/</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_remote_ipaddr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>138</y>
+     <width>202</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>155.94.228.8</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="lineEdit_remote_port">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>211</x>
+     <y>138</y>
+     <width>69</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;
+background-color: rgb(255, 255, 255);
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="text">
+    <string>8000</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>138</y>
+     <width>16</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 18pt &quot;Consolas&quot;;</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="lineEdit_log">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>181</y>
+     <width>366</width>
+     <height>107</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">font: 10pt &quot;Consolas&quot;;
+background-color: rgb(181, 181, 255);
+color: rgb(0, 0, 0);
+</string>
+   </property>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Consolas'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Click 'START' to run frpc and start a tcp server.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
