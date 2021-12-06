@@ -991,13 +991,13 @@ void getdata2(int &N,vector<int> &data){
 }
 
 int saf(){
-//    vector<int> data;
-//    int N;
-//    getdata2(N,data);
+    //    vector<int> data;
+    //    int N;
+    //    getdata2(N,data);
 
     vector<int> data{6,6,6,6,2,3,3,3};
     //int N=8;
-//    getdata2(N,data);
+    //    getdata2(N,data);
 
 
 
@@ -1158,16 +1158,16 @@ int x(vector<int> &sid,int size,int M){
         }
 
     }
-//    for(auto &ch:res){
-//        std::sort(ch.begin(),ch.end());
-//    }
-//    set<vector<int>> st(res.begin(),res.end());
-//    res.assign(st.begin(),st.end());
-//    int sz = 0;
-//    for(auto ch:res){
-//        if((ch[0]+ch[1]+ch[2]) % M == 0)
-//            ++sz;
-//    }
+    //    for(auto &ch:res){
+    //        std::sort(ch.begin(),ch.end());
+    //    }
+    //    set<vector<int>> st(res.begin(),res.end());
+    //    res.assign(st.begin(),st.end());
+    //    int sz = 0;
+    //    for(auto ch:res){
+    //        if((ch[0]+ch[1]+ch[2]) % M == 0)
+    //            ++sz;
+    //    }
     return res_.size();
 }
 
@@ -1242,7 +1242,7 @@ void getdata291(vector<int> &day_minutes){
             while(kk < tt && day_minutes[kk]==1){
                 ++kk;
             }
-//            --kk;
+            //            --kk;
             endindex=kk-1;
             int start_hour,start_minute,end_hour,end_minute;
             start_hour = startindex/60;
@@ -1283,7 +1283,7 @@ int getDa_1(){
             if(data[j]=='T' || data[j]=='R')
                 zerozero.first+=map[data[j]];
             else
-               zerozero.second+=map[data[j]];
+                zerozero.second+=map[data[j]];
             if(zerozero.first==0 && zerozero.second==0)
                 ++res;
         }
@@ -1330,9 +1330,9 @@ std::set<vector<int>> x_30(vector<int> &sid,long long size){
 
     }
 
-//    set<vector<int>> st(res.begin(),res.end());
-//    res.assign(st.begin(),st.end());
-//    int sz = 0;
+    //    set<vector<int>> st(res.begin(),res.end());
+    //    res.assign(st.begin(),st.end());
+    //    int sz = 0;
 
     return res_;
 }
@@ -1388,10 +1388,10 @@ void ha(vector<int> &line){//size =26
                     if(sum==1 && justcout_index==-1)
                     {
 
-                    res.clear();
-                    res.push_back('!');
-                    sum=0;
-                    break;
+                        res.clear();
+                        res.push_back('!');
+                        sum=0;
+                        break;
                     }
                 }
                 printChar(i,res);
@@ -1417,7 +1417,117 @@ void ha(vector<int> &line){//size =26
 }
 
 
-void hald(){
+
+void insertSort(std::vector<int> &list){
+    int i,j;
+    int sz = list.size();
+    for(i=2;i<sz;++i){
+        if(list[i] < list[i-1]){
+            list[0] = list[i];
+            for(j=i-1;list[j]>list[0];--j)
+                list[j+1]=list[j];
+            list[j+1]=list[0];
+        }
+    }
+}
+
+void heapAdjust(std::vector<int> &list,int s,int m){
+    //adjust range[s,m] in heap;
+    int temp,j;
+    temp = list[s];
+    for(j=2*s;j<=m;j*=2){
+        if(j<m && list[j] < list[j+1])
+            ++j;
+        if(temp >= list[j])
+            break;
+        list[s] = list[j];
+        s=j;
+    }
+    list[s] = temp;
+}
+
+void heapSort(std::vector<int> &list){
+    int i;
+    std::vector<int> listWithTenNums;//in fact the size is 11 because there is a node 0;
+    listWithTenNums.assign(list.begin(),list.begin()+11);
+    int length = 10;
+    for(i=length/2;i>0;--i)
+        heapAdjust(listWithTenNums,i,length);//make a 10-elements max-heap;
+    for(i=11;i<(int)list.size();++i){
+        if(list[i] >= listWithTenNums[1])
+            continue;//list[i] is not a good element
+        listWithTenNums[1] = list[i];
+        heapAdjust(listWithTenNums,1,length);
+    }
+    std::sort(listWithTenNums.begin(),listWithTenNums.end());
+    for(i=10;i>0;--i)
+        cout << listWithTenNums[i]<<' ';
+}
+
+void lru(std::vector<std::pair<int,int>> &sequence){
+    std::unordered_map<int,int> key_index;
+    std::vector<pair<int,int>> LRU;
+    int sz = sequence.size();
+    for(int i=0;i<sz;++i){
+        int key = sequence[i].first;
+        int value = sequence[i].second;
+        if(key_index.count(key)){
+            if((int)LRU.size() !=3){//not full
+                if(LRU[0].first == key){
+                    LRU[0].first = LRU[1].first;
+                    LRU[0].second = LRU[1].second;
+                    key_index[LRU[1].first] = 0;
+                    LRU[1].first = key;
+                    LRU[1].second = value;
+                    key_index[key] = 1;
+                }
+                else{
+                    LRU[1].second = value;
+                    key_index[key] = 1;
+                }
+            }
+            else{//full
+                if(LRU[0].first == key){
+                    key_index[LRU[1].first] = 0;
+                    key_index[LRU[2].first] = 1;
+                    key_index[LRU[0].first] = 2;
+                    LRU.erase(LRU.begin());
+                    LRU.push_back(make_pair(key,value));
+
+                }
+                else if(LRU[1].first == key){
+                    key_index[LRU[2].first] = 1;
+                    key_index[LRU[1].first] = 2;
+                    LRU.erase(LRU.begin()+1);
+                    LRU.push_back(make_pair(key,value));
+                }
+                else
+//                    key_index[LRU[2].first] = 1;
+                    LRU[2].second = value;
+            }
+        }
+        else{//not dupicated
+            if((int)LRU.size() !=3){
+                //not full
+                key_index[key] = LRU.size();
+                LRU.push_back(make_pair(key,value));
+            }
+            else{
+                key_index[LRU[1].first] = 0;
+                key_index[LRU[2].first] = 1;
+                key_index[key] = 2;
+                LRU.erase(LRU.begin());
+                LRU.push_back(make_pair(key,value));
+            }
+
+        }
+    }
+    for(int i =LRU.size()-1;i>=0;--i){
+        auto it = LRU[i];
+        int key = it.first;
+        int value = it.second;
+        cout << '{' << key << ':' << value << '}' << ' ';
+    }
 
 }
 
@@ -1426,13 +1536,11 @@ void hald(){
 
 int main()
 {
-    vector<int> d(26,0);
-    d[0]=4;
-    d[1]=1;
-    d[2]=4;
-    ha(d);
-
-
+    int temp1,temp2;
+    std::vector<pair<int,int>> array;
+    while(cin >> temp1 >> temp2)
+        array.push_back(make_pair(temp1,temp2));
+    lru(array);
     return 0;
 }
 
